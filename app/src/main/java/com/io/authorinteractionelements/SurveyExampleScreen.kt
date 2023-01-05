@@ -1,29 +1,27 @@
 package com.io.authorinteractionelements
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.io.survey.SurveyAnswerModel
-import com.io.survey.SurveyItem
-import com.io.survey.SurveyQuestionModel
+import com.io.survey.*
 
 @Composable
 fun SurveyExampleScreen(
     modifier: Modifier = Modifier,
-    questions: List<SurveyQuestionModel>,
-    onAnsweredOnQuestion: (SurveyQuestionModel, SurveyAnswerModel) -> Unit
+    questions: List<QuestionWithSomeTypeAnswers>,
+    answerOnQuestion: (QuestionWithSomeTypeAnswers, AnswerWithPercentageChosen) -> Unit
 ){
-    LazyColumn(
+    Column(
         modifier = modifier
     ) {
-        items(questions){ item ->
-            SurveyItem(
-                surveyQuestionModel = item,
-                selectAnswer = onAnsweredOnQuestion
-            )
-        }
+        MultiStageSurveys(
+            modifier = Modifier.fillMaxWidth(),
+            questions = questions,
+            answerOnQuestion = { question, answer ->
+                answerOnQuestion(question, answer)
+            }
+        )
     }
 
 }

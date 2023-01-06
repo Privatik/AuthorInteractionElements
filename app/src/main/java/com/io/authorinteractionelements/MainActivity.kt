@@ -32,18 +32,22 @@ class MainActivity : ComponentActivity() {
                 when (currentScreen){
                     Screen.Survey -> SurveyExampleScreen(
                         modifier = Modifier
-                            .fillMaxSize()
-                        ,
+                            .fillMaxSize(),
                         questions = vm.surveyQuestions,
                         answerOnQuestion = vm::updateSurveyQuestion
+                    )
+                    Screen.MatchBetweenTwoColumn -> MatchBetweenTwoColumnExampleScreen(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        orderedFirstColumn = vm.firstOrderedColumn,
+                        orderedSecondColumn = vm.secondOrderedColumn,
+                        matchItems = vm::matchIds
                     )
                     else -> ButtonsScreen(
                         modifier = Modifier.fillMaxSize(),
                         changeScreen = { currentScreen = it }
                     )
                 }
-
-
             }
         }
     }

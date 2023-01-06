@@ -6,6 +6,7 @@ import androidx.compose.runtime.saveable.Saver
 
 sealed class Screen(val route: String){
     object Survey: Screen(Route.SURVEY.route)
+    object MatchBetweenTwoColumn: Screen(Route.MATCH_BETWEEN_TWO_COLUMN.route)
 
     companion object{
         val Saver = Saver<MutableState<Screen?>, String>(
@@ -21,11 +22,13 @@ sealed class Screen(val route: String){
 
 
 private enum class Route(val route: String){
-    SURVEY("/survey")
+    SURVEY("/survey"),
+    MATCH_BETWEEN_TWO_COLUMN("/MatchBetweenTwoColumn")
 }
 
 private fun String?.parseScreen(): Screen? =
     when (this){
         Route.SURVEY.route -> Screen.Survey
+        Route.MATCH_BETWEEN_TWO_COLUMN.route -> Screen.MatchBetweenTwoColumn
         else -> null
     }

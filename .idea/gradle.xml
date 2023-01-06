@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/item" />
+            <option value="$PROJECT_DIR$/item/match-between-two-column" />
             <option value="$PROJECT_DIR$/item/survey" />
           </set>
         </option>

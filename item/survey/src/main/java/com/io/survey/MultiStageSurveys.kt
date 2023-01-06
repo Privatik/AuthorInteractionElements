@@ -30,34 +30,6 @@ fun MultiStageSurveys(
         scrollState = scrollState,
         userScrollEnabled = canScroll,
     ) {
-
-    }
-    var width by remember { mutableStateOf(0) }
-
-    Canvas(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        width = size.width.roundToInt()
-    }
-
-    LaunchedEffect(Unit){
-        scrollState.interactionSource
-            .interactions
-            .collect{
-                when (it){
-                    is DragInteraction.Cancel,
-                    is DragInteraction.Stop -> {
-                        scrollState.finishScroll(this, width)
-                    }
-                }
-            }
-    }
-
-    LazyRow(
-        modifier = modifier,
-        state = scrollState,
-        userScrollEnabled = canScroll,
-    ) {
         itemsIndexed(questions) { page, item ->
             Column(
                 modifier = Modifier

@@ -6,11 +6,18 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.io.core.ui.Theme
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     Screen.PutSkipItem -> PutSkipItemExampleScreen(
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(10.dp)
                     )
                     else -> ButtonsScreen(
                         modifier = Modifier.fillMaxSize(),

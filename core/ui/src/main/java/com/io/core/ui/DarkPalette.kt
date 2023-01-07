@@ -13,7 +13,7 @@ internal object DarkPalette: Palette {
     override val textSecondary: Color = Color.Black
     override val textTertiary: Color = Color.Gray
     override val iconPrimary: Color = Color.White
-    override val buttonRippleOnContent: Color = Color.Black
+    override val buttonRippleOnContent: Color = Color.White
     override val divider: Color = Color.White.copy(alpha = 0.5f)
     override val error: Color = Color.Red.copy(alpha = 0.8f)
     override val success: Color = Color.Green.copy(alpha = 0.8f)

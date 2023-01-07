@@ -3,7 +3,6 @@ package com.io.authorinteractionelements
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.io.survey.*
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainViewModel: ViewModel() {
 
@@ -22,19 +21,23 @@ class MainViewModel: ViewModel() {
         )
     }
 
-    fun matchIds(
-        firstItemId: Long?,
-        secondItemId: Long?
+    fun foundMatchItems(
+        itemId: Long
     ) {
-        if (firstItemId == secondItemId && secondItemId != null){
-            val firstPairForMatchIndex = firstOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == firstItemId }
-            val secondPairForMatchIndex = secondOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == secondItemId }
-            val pairForMatch = firstOrderedColumn[firstPairForMatchIndex].copy(
-                isFound = true
-            )
+        val firstPairForMatchIndex =
+            firstOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }
+        val secondPairForMatchIndex =
+            secondOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }
+        val pairForMatch = firstOrderedColumn[firstPairForMatchIndex].copy(
+            isFound = true
+        )
 
-            firstOrderedColumn[firstPairForMatchIndex] = pairForMatch
-            secondOrderedColumn[secondPairForMatchIndex] = pairForMatch
-        }
+        val nextIndex = firstOrderedColumn.count { it.isFound }
+
+        firstOrderedColumn.removeAt(firstPairForMatchIndex)
+        firstOrderedColumn.add(nextIndex, pairForMatch)
+
+        secondOrderedColumn.removeAt(secondPairForMatchIndex)
+        secondOrderedColumn.add(nextIndex, pairForMatch)
     }
 }

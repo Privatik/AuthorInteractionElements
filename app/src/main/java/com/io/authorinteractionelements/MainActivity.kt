@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize(),
                         orderedFirstColumn = vm.firstOrderedColumn,
                         orderedSecondColumn = vm.secondOrderedColumn,
-                        matchItems = vm::matchIds
+                        foundMatchItems = vm::foundMatchItems
                     )
                     else -> ButtonsScreen(
                         modifier = Modifier.fillMaxSize(),

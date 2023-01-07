@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme.dimens
-import com.io.item.changeBackgroundPerRipple
+import com.io.item.rippleBackground
 
 @Composable
 fun SurveyAnswer(
@@ -57,7 +57,7 @@ fun SurveyAnswer(
             )
             .clip(MaterialTheme.shapes.small)
             .then(supportModifier)
-            .changeBackgroundPerRipple(
+            .rippleBackground(
                 isDrawRippleBackground = isSelectedItem,
                 isHandleClickable = !isYouAnswered,
                 background = palette.contentPrimary,

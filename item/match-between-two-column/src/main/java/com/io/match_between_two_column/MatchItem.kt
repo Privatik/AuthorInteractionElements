@@ -11,8 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme
-import com.io.core.ui.ProjectTheme.palette
-import com.io.item.changeBackgroundPerRipple
+import com.io.item.rippleBackground
 
 @Composable
 fun MatchItem(
@@ -20,7 +19,7 @@ fun MatchItem(
     selectedItemId: State<Long?>,
     item: ItemColumn,
     isFound: Boolean,
-    changeSelectItem: (ItemColumn) -> Unit,
+    selectItem: (ItemColumn) -> Unit,
 ){
     val palette = LocalPaletteColors.current
     val supportModifier = remember(isFound) {
@@ -37,12 +36,12 @@ fun MatchItem(
     Box(
         modifier = modifier
             .then(supportModifier)
-            .changeBackgroundPerRipple(
+            .rippleBackground(
                 isHandleClickable = !isFound,
                 isDrawRippleBackground = isSelectedItem.value,
                 background = palette.contentPrimary,
                 onClick = {
-                    changeSelectItem(item)
+                    selectItem(item)
                 },
             )
             .padding(ProjectTheme.dimens.insidePadding)

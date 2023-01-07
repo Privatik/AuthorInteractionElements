@@ -52,5 +52,19 @@ fun ButtonsScreen(
                 color = palette.contentPrimary
             )
         }
+        Spacer(modifier = Modifier.height(dimens.smallSpace))
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = palette.backgroundPrimary
+            ),
+            onClick = {
+                changeScreen(Screen.PutSkipItem)
+            },
+        ) {
+            Text(
+                text = stringResource(R.string.put_skip_item),
+                color = palette.contentPrimary
+            )
+        }
     }
 }

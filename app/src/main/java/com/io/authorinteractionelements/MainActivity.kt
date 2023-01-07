@@ -43,6 +43,10 @@ class MainActivity : ComponentActivity() {
                         orderedSecondColumn = vm.secondOrderedColumn,
                         foundMatchItems = vm::foundMatchItems
                     )
+                    Screen.PutSkipItem -> PutSkipItemExampleScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
                     else -> ButtonsScreen(
                         modifier = Modifier.fillMaxSize(),
                         changeScreen = { currentScreen = it }

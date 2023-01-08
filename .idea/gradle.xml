@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/item" />
             <option value="$PROJECT_DIR$/item/match-between-two-column" />
+            <option value="$PROJECT_DIR$/item/put-skip-per-drag" />
             <option value="$PROJECT_DIR$/item/put-skip-per-edit" />
             <option value="$PROJECT_DIR$/item/survey" />
           </set>

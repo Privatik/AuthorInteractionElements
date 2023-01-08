@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -58,11 +57,39 @@ fun ButtonsScreen(
                 backgroundColor = palette.backgroundPrimary
             ),
             onClick = {
-                changeScreen(Screen.PutSkipItem)
+                changeScreen(Screen.PutSkipItemPerEdit)
             },
         ) {
             Text(
-                text = stringResource(R.string.put_skip_item),
+                text = stringResource(R.string.put_skip_item_per_edit),
+                color = palette.contentPrimary
+            )
+        }
+        Spacer(modifier = Modifier.height(dimens.smallSpace))
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = palette.backgroundPrimary
+            ),
+            onClick = {
+                changeScreen(Screen.PutSkipItemPerEdit)
+            },
+        ) {
+            Text(
+                text = stringResource(R.string.put_skip_item_per_edit),
+                color = palette.contentPrimary
+            )
+        }
+        Spacer(modifier = Modifier.height(dimens.smallSpace))
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = palette.backgroundPrimary
+            ),
+            onClick = {
+                changeScreen(Screen.PutSkipItemPerDrag)
+            },
+        ) {
+            Text(
+                text = stringResource(R.string.put_skip_item_per_drag),
                 color = palette.contentPrimary
             )
         }

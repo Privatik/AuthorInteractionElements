@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,12 +27,8 @@ fun SkipTextField(
             if (inputText.isNotBlank()){
                 SendOnCheckButton (
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(vertical = 4.dp)
-                        .background(
-                            color = Color.Blue,
-                            shape = MaterialTheme.shapes.medium
-                        ),
+                        .size(30.dp)
+                        .padding(vertical = 4.dp),
                     onClick = onCheckText
                 )
             }

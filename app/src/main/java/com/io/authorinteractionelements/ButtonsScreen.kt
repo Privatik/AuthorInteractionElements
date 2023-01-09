@@ -71,20 +71,6 @@ fun ButtonsScreen(
                 backgroundColor = palette.backgroundPrimary
             ),
             onClick = {
-                changeScreen(Screen.PutSkipItemPerEdit)
-            },
-        ) {
-            Text(
-                text = stringResource(R.string.put_skip_item_per_edit),
-                color = palette.contentPrimary
-            )
-        }
-        Spacer(modifier = Modifier.height(dimens.smallSpace))
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = palette.backgroundPrimary
-            ),
-            onClick = {
                 changeScreen(Screen.PutSkipItemPerDrag)
             },
         ) {

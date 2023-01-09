@@ -23,17 +23,19 @@ fun InteractionText(
     modifier: Modifier = Modifier,
     text: String,
     pattern: String,
-    getHelper: (InteractionHelper<String>) -> Unit = {},
+    getInteractionHelper: (InteractionHelper<String>) -> Unit = {},
     textPlaceable: @Composable (
         text: String,
     ) -> Unit,
     interactionPlaceable: @Composable (
+        beforePatternText: String,
+        afterPatternText: String,
         foundPattern: String,
     ) -> Unit,
 ){
     val helper = remember {
         InteractionHelperImpl(pattern, text.split(" "))
-            .apply(getHelper)
+            .apply(getInteractionHelper)
     }
 
     Layout(
@@ -75,23 +77,39 @@ fun InteractionText(
             }
         }
 
-        layout(outerContraints.maxWidth, outerContraints.maxHeight){
+        val widthLayoutSize =
+            max(
+                rowsWidth.maxOrNull() ?: 0,
+                outerContraints.minWidth
+            )
 
+
+        val heightLayoutSize =
+            max(
+                placeablesInRow.fold(0){ currentHeight, nextRowPlaceables ->
+                    currentHeight + (nextRowPlaceables.maxOfOrNull { it.height } ?: 0)
+                },
+                outerContraints.minHeight
+            )
+
+        rowsWidth.clear()
+
+        layout(widthLayoutSize, heightLayoutSize){
             var yOffset = 0
             placeablesInRow.forEach { placeables ->
                 var xOffset = 0
 
-                var maxHeight = 0
+                var rowHeight = 0
                 placeables.forEach { placeable ->
-                    placeable.place(
+                    placeable.placeRelative(
                         x = xOffset,
                         y = yOffset
                     )
 
                     xOffset += placeable.width
-                    maxHeight = max(maxHeight, placeable.height)
+                    rowHeight = max(rowHeight, placeable.height)
                 }
-                yOffset += maxHeight
+                yOffset += rowHeight
             }
         }
     }
@@ -105,19 +123,27 @@ private class InteractionHelperImpl(
     private val elements = mutableListOf<Element>()
 
     init {
-        splitText.forEach { item ->
+        splitText.forEachIndexed { index, item ->
+            val additionalSpace = if (index == splitText.lastIndex) "" else " "
+
             if (regex.containsMatchIn(item)){
-//                val punctuation = item.replace(regex){
-//                    elements.add(Element.Interaction(it.value)); ""
-//                }
+                val result = regex.find(item)
+                val beforePatternText = result?.let {
+                    item.substring(0, it.range.first)
+                } ?: ""
+                val afterPatternText = result?.let {
+                    if (it.range.last + 1 != item.length){
+                        "${item.substring(it.range.last + 1, item.length)}$additionalSpace"
+                    } else additionalSpace
+                } ?: additionalSpace
 
-                elements.add(Element.Interaction(item))
-
-//                if (punctuation.isNotBlank()){
-//                    elements.add(Element.Text("$punctuation "))
-//                }
+                elements.add(Element.Interaction(
+                    beforePatternText = beforePatternText,
+                    afterPatternText = afterPatternText,
+                    foundPattern = item,
+                ))
             } else {
-                elements.add(Element.Text("$item "))
+                elements.add(Element.Text("$item$additionalSpace"))
             }
         }
 
@@ -125,7 +151,11 @@ private class InteractionHelperImpl(
 
     sealed interface Element{
         data class Text(val text: String): Element
-        data class Interaction(val foundPattern: String): Element
+        data class Interaction(
+            val beforePatternText: String,
+            val afterPatternText: String,
+            val foundPattern: String
+        ): Element
     }
 
     @Composable
@@ -134,6 +164,8 @@ private class InteractionHelperImpl(
             text: String,
         ) -> Unit,
         interactionPlaceable: @Composable (
+            beforePatternText: String,
+            afterPatternText: String,
             foundPattern: String,
         ) -> Unit,
     ){
@@ -143,7 +175,11 @@ private class InteractionHelperImpl(
                     textPlaceable(it.text)
                 }
                 is Element.Interaction -> {
-                    interactionPlaceable(it.foundPattern)
+                    interactionPlaceable(
+                        beforePatternText = it.beforePatternText,
+                        afterPatternText = it.afterPatternText,
+                        foundPattern = it.foundPattern,
+                    )
                 }
             }
         }

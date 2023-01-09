@@ -27,7 +27,6 @@ internal fun SendOnCheckButton(
 
     Box(
         modifier = modifier
-            .clipToBounds()
             .clickable(
                 onClick = onClick,
                 role = Role.Button,

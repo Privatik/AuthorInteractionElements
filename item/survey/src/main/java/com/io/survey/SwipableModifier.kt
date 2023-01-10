@@ -5,7 +5,6 @@ import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -14,7 +13,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 internal fun Modifier.swipable(
-    state: SwipableState,
+    state: LeftSwipableState,
 ) = pointerInput(Unit){
     val decay = splineBasedDecay<Offset>(this)
     val tracker = VelocityTracker()
@@ -26,7 +25,7 @@ internal fun Modifier.swipable(
             val velocity = Offset(velX, velY)
             val targetOffset = decay.calculateTargetValue(
                 typeConverter = Offset.VectorConverter,
-                initialValue = state.currentOffset,
+                initialValue = state.lastInteractionOffset,
                 initialVelocity = velocity
             )
             launch {
@@ -45,11 +44,12 @@ internal fun Modifier.swipable(
             },
             onDrag = { change, dragAmount ->
                 launch {
-                    state.snapTo(state.currentOffset.plus(dragAmount))
+                    state.snapTo(state.lastInteractionOffset.plus(dragAmount))
                 }
                 if (!isFirstTab) {
                     tracker.addPointerInputChange(change)
                 } else {
+                    state.determineDirection(dragAmount)
                     isFirstTab = false
                 }
             },

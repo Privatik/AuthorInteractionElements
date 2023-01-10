@@ -3,7 +3,7 @@ package com.io.survey
 import androidx.annotation.FloatRange
 import kotlinx.coroutines.flow.StateFlow
 
-data class QuestionWithSomeTypeAnswers(
+data class QuestionWithSomeAnswers(
     val id: Long,
     val text: String,
     val rightAnswerId: Long,

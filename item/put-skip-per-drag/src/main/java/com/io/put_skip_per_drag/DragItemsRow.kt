@@ -2,13 +2,16 @@ package com.io.put_skip_per_drag
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import com.io.core.ui.ProjectTheme.dimens
 import com.io.core.ui.ProjectTheme.palette
 
@@ -18,6 +21,7 @@ fun DragElementsRow(
     modifier: Modifier = Modifier,
     changePositionObserver: ChangePositionObserver,
     interactionElements: List<InteractionElement>,
+    offsetYForDragItems: State<Dp>,
 ){
     LazyRow(
         modifier = modifier,
@@ -27,6 +31,7 @@ fun DragElementsRow(
 
             DragItem(
                 modifier = Modifier
+                    .padding(top = offsetYForDragItems.value)
                     .animateItemPlacement()
                     .draggableInContainer(
                         observer = changePositionObserver,

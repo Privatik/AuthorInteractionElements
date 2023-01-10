@@ -3,4 +3,5 @@
     <string name="choice">Выбрать</string>
     <string name="percentage_pattern">%s %%</string>
     <string name="question_one_of_count">Вопрос %s/%s</string>
+    <string name="result">Результат</string>
 </resources>

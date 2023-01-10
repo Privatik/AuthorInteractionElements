@@ -1,16 +1,27 @@
 package com.io.authorinteractionelements
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 
-sealed class Screen(val route: String){
-    object Survey: Screen(Route.SURVEY.route)
-    object MatchBetweenTwoColumn: Screen(Route.MATCH_BETWEEN_TWO_COLUMN.route)
-    object PutSkipItemPerEdit: Screen(Route.PUT_SKIP_ITEM_PER_EDIT.route)
-    object PutSkipItemPerDrag: Screen(Route.PUT_SKIP_ITEM_PER_DRAG.route)
+sealed class Screen(
+    @StringRes val label: Int,
+    val route: String,
+){
+    object Survey: Screen(R.string.survey_label,"/Survey")
+    object MatchBetweenTwoColumn: Screen(R.string.match_between_two_column_label,"/MatchBetweenTwoColumn")
+    object PutSkipItemPerEdit: Screen(R.string.put_skip_item_per_edit_label,"/PutSkipItemPerEdit")
+    object PutSkipItemPerDrag: Screen(R.string.put_skip_item_per_drag_label,"/PutSkipItemPerDrag")
 
     companion object{
+        fun values(): List<Screen> = listOf(
+            Survey,
+            MatchBetweenTwoColumn,
+            PutSkipItemPerEdit,
+            PutSkipItemPerDrag
+        )
+
         val Saver = Saver<MutableState<Screen?>, String>(
             save = {
                 it.value?.route ?: ""
@@ -22,19 +33,11 @@ sealed class Screen(val route: String){
     }
 }
 
-
-private enum class Route(val route: String){
-    SURVEY("/Survey"),
-    MATCH_BETWEEN_TWO_COLUMN("/MatchBetweenTwoColumn"),
-    PUT_SKIP_ITEM_PER_EDIT("/PutSkipItemPerEdit"),
-    PUT_SKIP_ITEM_PER_DRAG("/PutSkipItemPerDrag"),
-}
-
 private fun String?.parseScreen(): Screen? =
     when (this){
-        Route.SURVEY.route -> Screen.Survey
-        Route.MATCH_BETWEEN_TWO_COLUMN.route -> Screen.MatchBetweenTwoColumn
-        Route.PUT_SKIP_ITEM_PER_EDIT.route -> Screen.PutSkipItemPerEdit
-        Route.PUT_SKIP_ITEM_PER_DRAG.route -> Screen.PutSkipItemPerDrag
+        Screen.Survey.route -> Screen.Survey
+        Screen.MatchBetweenTwoColumn.route -> Screen.MatchBetweenTwoColumn
+        Screen.PutSkipItemPerEdit.route -> Screen.PutSkipItemPerEdit
+        Screen.PutSkipItemPerDrag.route -> Screen.PutSkipItemPerDrag
         else -> null
     }

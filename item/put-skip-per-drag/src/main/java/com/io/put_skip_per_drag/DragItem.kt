@@ -14,7 +14,8 @@ fun DragItem(
     item: InteractionElement
 ){
     Box(
-        modifier = modifier.padding(dimens.insidePadding),
+        modifier = modifier
+            .padding(dimens.insidePadding),
         contentAlignment = Alignment.Center
     ) {
         Text(text = item.value as String)

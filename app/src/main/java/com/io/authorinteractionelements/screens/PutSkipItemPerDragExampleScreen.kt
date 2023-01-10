@@ -1,10 +1,12 @@
-package com.io.authorinteractionelements
+package com.io.authorinteractionelements.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme.dimens
@@ -22,6 +24,8 @@ fun PutSkipItemPerDragExampleScreen(
     modifier: Modifier = Modifier
 ){
     val palette = LocalPaletteColors.current
+    val dimens = dimens
+    val density = LocalDensity.current
 
     val interactionElements = remember { mutableListOf<InteractionElement>().toMutableStateList() }
     val changePositionObserver = remember { ChangePositionObserver() }
@@ -30,11 +34,21 @@ fun PutSkipItemPerDragExampleScreen(
         Modifier.height(30.dp)
     }
 
-    Column(
-        modifier = modifier
+    val offsetYForDragItems = remember {
+        mutableStateOf(dimens.mediumSpace)
+    }
+
+    Box(
+        modifier = modifier,
     ) {
         InteractionText(
-            modifier = Modifier,
+            modifier = Modifier
+                .onSizeChanged {
+                    val height = with(density) { it.height.toDp() }
+                    if (dimens.mediumSpace + height != offsetYForDragItems.value){
+                        offsetYForDragItems.value = dimens.mediumSpace + height
+                    }
+                },
             text = Mock,
             pattern = """###\|\w+\|\w+\|###""",
             getInteractionHelper = { helper ->
@@ -92,12 +106,12 @@ fun PutSkipItemPerDragExampleScreen(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(dimens.mediumSpace))
         DragElementsRow(
             modifier = Modifier
                 .fillMaxWidth(),
             changePositionObserver = changePositionObserver,
-            interactionElements = interactionElements
+            interactionElements = interactionElements,
+            offsetYForDragItems = offsetYForDragItems
         )
     }
 }

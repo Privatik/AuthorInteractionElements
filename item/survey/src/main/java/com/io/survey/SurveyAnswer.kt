@@ -1,5 +1,7 @@
 package com.io.survey
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +12,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme.dimens
 import com.io.item.rippleBackground
+import kotlinx.coroutines.launch
 
 @Composable
 fun SurveyAnswer(
@@ -37,46 +42,60 @@ fun SurveyAnswer(
         remember { mutableStateOf(Percentage(0f))  }
     }
 
-    val supportModifier = remember(isYouAnswered) {
-        if (isYouAnswered){
-            if (rightSurveyAnswerId == answer.id){
-                return@remember Modifier.background(palette.success)
-            } else if (isSelectedItem) {
-                return@remember Modifier.background(palette.error)
+    val blockScale = remember { Animatable(1f) }
+
+    LaunchedEffect(isSelectedItem){
+        if (isSelectedItem){
+            launch {
+                blockScale.animateTo(1.05f, tween(DurationAnimable))
+                blockScale.animateTo(1f, tween(DurationAnimable))
             }
+        } else {
+            launch { blockScale.animateTo(1f) }
         }
-        Modifier
     }
 
     Row(
         modifier = modifier
+            .graphicsLayer {
+                scaleX = blockScale.value
+                scaleY = blockScale.value
+            }
             .border(
                 width = 1.dp,
                 color = palette.backgroundPrimary,
                 shape = MaterialTheme.shapes.small
             )
             .clip(MaterialTheme.shapes.small)
-            .then(supportModifier)
             .rippleBackground(
                 isDrawRippleBackground = isSelectedItem,
                 isHandleClickable = !isYouAnswered,
-                background = palette.contentPrimary,
+                color = palette.buttonRippleOnContent,
                 onClick = {
                     clickOnAnswer(answer)
                 }
+            )
+            .rippleBackground(
+                initializeOffset = { size -> Offset(0f, (size.height / 2).toFloat()) },
+                isDrawRippleBackground = isYouAnswered && (rightSurveyAnswerId == answer.id || isSelectedItem),
+                color = if (rightSurveyAnswerId == answer.id) palette.success else palette.error
             )
             .padding(dimens.insidePadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = answer.text,
-            fontSize = dimens.variationFontSize
+            fontSize = dimens.variationFontSize,
+            color = palette.textSecondary,
         )
         if (isYouAnswered){
             Text(
                 text = stringResource(R.string.percentage_pattern, (percentageAnswered.value.value * 100).toInt() ),
-                fontSize = dimens.variationFontSize
+                fontSize = dimens.variationFontSize,
+                color = palette.textSecondary,
             )
         }
     }
 }
+
+private val DurationAnimable = 200

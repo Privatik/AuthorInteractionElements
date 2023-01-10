@@ -39,7 +39,7 @@ fun MatchItem(
             .rippleBackground(
                 isHandleClickable = !isFound,
                 isDrawRippleBackground = isSelectedItem.value,
-                background = palette.contentPrimary,
+                color = palette.contentPrimary,
                 onClick = {
                     selectItem(item)
                 },

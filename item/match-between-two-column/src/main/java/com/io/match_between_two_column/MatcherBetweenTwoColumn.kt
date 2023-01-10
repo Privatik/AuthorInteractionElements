@@ -36,7 +36,7 @@ fun MatcherBetweenTwoColumn(
     val helper = remember { MatchHelper(foundMatchItems) }
 
     Row(
-        modifier = modifier.height(dimens.maxBlockSize)
+        modifier = modifier.height(150.dp)
     ) {
         LazyColumnForMatch(
             items = orderedFirstColumn,

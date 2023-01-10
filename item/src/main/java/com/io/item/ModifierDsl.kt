@@ -2,7 +2,6 @@ package com.io.item
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -11,25 +10,29 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
 fun Modifier.rippleBackground(
-    isDrawRippleBackground: Boolean,
-    isHandleClickable: Boolean,
-    background: Color,
-    onClick: () -> Unit
+    initializeOffset: (IntSize) -> Offset = { size ->
+        Offset((size.width / 2).toFloat(), (size.height / 2).toFloat())
+    },
+    isDrawRippleBackground: Boolean = false,
+    isHandleClickable: Boolean = false,
+    color: Color,
+    onClick: () -> Unit = {},
 ): Modifier = composed {
-    var lastClickPosition by remember { mutableStateOf(Offset.Unspecified) }
+    var size by remember { mutableStateOf<IntSize>(IntSize.Zero) }
+    var lastClickPosition by remember(size) { mutableStateOf(initializeOffset(size)) }
+    val maxRadius = remember(size) { max(size.width.toFloat(), size.height.toFloat()) }
     val radius = remember { Animatable(0f) }
-    var maxRadius by remember { mutableStateOf(-1f) }
 
     LaunchedEffect(isDrawRippleBackground){
         if (isDrawRippleBackground){
@@ -60,21 +63,17 @@ fun Modifier.rippleBackground(
         }
         .clip(MaterialTheme.shapes.small)
         .drawBehind {
-            if (lastClickPosition.isUnspecified) {
-                lastClickPosition = Offset(size.width / 2, size.height / 2)
-            }
-
-            if (isHandleClickable && isDrawRippleBackground) {
+            if (isDrawRippleBackground) {
                 drawCircle(
-                    color = background,
+                    color = color,
                     radius = radius.value,
                     center = lastClickPosition,
                 )
             }
         }
         .onSizeChanged {
-            if (maxRadius == -1f) {
-                maxRadius = max(it.width.toFloat(), it.height.toFloat())
+            if (it != size){
+                size = it
             }
         }
 }

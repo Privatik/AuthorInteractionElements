@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AuthorInteractionElements</string>
-    <string name="multi_survey">Многоступенчатый опрос</string>
-    <string name="match_between_two_column">Сопоставить два элемента</string>
-    <string name="put_skip_item_per_edit">Заполнение пропуска в тексте через ввод</string>
-    <string name="put_skip_item_per_drag">Заполнение пропуска в тексте через перетаскивание</string>
+    <string name="survey_label">Многоступенчатый опрос</string>
+    <string name="match_between_two_column_label">Сопоставить два элемента</string>
+    <string name="put_skip_item_per_edit_label">Заполнение пропуска в тексте через ввод</string>
+    <string name="put_skip_item_per_drag_label">Заполнение пропуска в тексте через перетаскивание</string>
 </resources>

@@ -1,8 +1,5 @@
 package com.io.survey
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -12,14 +9,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme.dimens
 import com.io.item.rippleBackground
-import kotlinx.coroutines.launch
+import com.io.item.scaleSelectAnswer
 
 @Composable
 fun SurveyAnswer(
@@ -42,25 +37,9 @@ fun SurveyAnswer(
         remember { mutableStateOf(Percentage(0f))  }
     }
 
-    val blockScale = remember { Animatable(1f) }
-
-    LaunchedEffect(isSelectedItem){
-        if (isSelectedItem){
-            launch {
-                blockScale.animateTo(1.05f, tween(DurationAnimable))
-                blockScale.animateTo(1f, tween(DurationAnimable))
-            }
-        } else {
-            launch { blockScale.animateTo(1f) }
-        }
-    }
-
     Row(
         modifier = modifier
-            .graphicsLayer {
-                scaleX = blockScale.value
-                scaleY = blockScale.value
-            }
+            .scaleSelectAnswer(isSelectedItem)
             .border(
                 width = 1.dp,
                 color = palette.backgroundPrimary,
@@ -76,7 +55,6 @@ fun SurveyAnswer(
                 }
             )
             .rippleBackground(
-                initializeOffset = { size -> Offset(0f, (size.height / 2).toFloat()) },
                 isDrawRippleBackground = isYouAnswered && (rightSurveyAnswerId == answer.id || isSelectedItem),
                 color = if (rightSurveyAnswerId == answer.id) palette.success else palette.error
             )
@@ -97,5 +75,3 @@ fun SurveyAnswer(
         }
     }
 }
-
-private val DurationAnimable = 200

@@ -26,7 +26,7 @@ fun MatchItem(
         if (isFound){
             return@remember Modifier.background(palette.success)
         }
-        Modifier
+        Modifier.background(palette.backgroundTertiary)
     }
 
     val isSelectedItem = remember {
@@ -39,13 +39,16 @@ fun MatchItem(
             .rippleBackground(
                 isHandleClickable = !isFound,
                 isDrawRippleBackground = isSelectedItem.value,
-                color = palette.contentPrimary,
+                color = palette.buttonRippleOnContent,
                 onClick = {
                     selectItem(item)
                 },
             )
             .padding(ProjectTheme.dimens.insidePadding)
     ){
-        Text(text = item.text)
+        Text(
+            text = item.text,
+            color = palette.textSecondary
+        )
     }
 }

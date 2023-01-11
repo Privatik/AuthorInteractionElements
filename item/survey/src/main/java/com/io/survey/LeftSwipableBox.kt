@@ -34,7 +34,8 @@ fun LeftSwipableBox(
         state.updateWidth(maxWidth.toFloat())
 
         layout(maxWidth, maxHeight){
-            placeables.forEachIndexed { index, placeable ->
+            state.availableRange().forEach { index ->
+                val placeable = placeables[index]
 
                 placeable.placeWithLayer(
                     position = IntOffset.Zero,

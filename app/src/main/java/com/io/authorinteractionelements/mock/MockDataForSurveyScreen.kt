@@ -11,12 +11,14 @@ private val random: Random by lazy { Random(System.currentTimeMillis()) }
 private val maxCountQuestion = 5
 
 val mockDataForSurveysScreen = List(countItemsForMockScreen){
-    List(random.nextInt(4, maxCountQuestion)) { questionIndex ->
+    List(random.nextInt(1, maxCountQuestion)) { questionIndex ->
         val countVarious = random.nextInt(2,mockQuestionToAnswer.size)
         val questionAndAnswer = mockQuestionToAnswer[random.nextInt(mockQuestionToAnswer.size)]
 
         var percentage = 1f
-        val usedAnswers = hashSetOf<String>()
+        val usedAnswers = hashSetOf<String>(
+
+        )
 
         val various = mutableListOf<AnswerWithPercentageChosen>()
 

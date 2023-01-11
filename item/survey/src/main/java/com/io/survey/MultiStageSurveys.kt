@@ -25,22 +25,20 @@ fun MultiStageSurveys(
         AnswerWithPercentageChosen,
     ) -> Unit
 ) {
-    val scrollState = rememberLazyListState(questions.nextIndex())
+    val swipableState = rememberLeftSwipableState(initializeIndex = questions.nextIndex(),countItems = questions.size)
     val scope = rememberCoroutineScope()
-    val canScroll by remember(scrollState) { derivedStateOf { questions.isAnsweredOnAllQuestion() } }
-    val swipableState = rememberLeftSwipableState(countItems = questions.size)
+    val canScroll by remember(swipableState.lastInteractionIndex) { derivedStateOf { questions.isAnsweredOnAllQuestion() } }
 
     LeftSwipableBox(
         state = swipableState,
-        userScrollEnabled = false,
+        userScrollEnabled = canScroll,
     ) { page ->
         val palette = palette
         val item by remember { derivedStateOf { questions[page] } }
         val border = remember { BorderStroke(2.dp, palette.backgroundPrimary) }
 
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = modifier
                 .padding(dimens.cardOutPadding),
             backgroundColor = palette.backgroundTertiary,
             shape = MaterialTheme.shapes.medium,
@@ -69,20 +67,11 @@ fun MultiStageSurveys(
                         answerOnQuestion(question, answer)
                         scope.launch {
                             if (page != questions.lastIndex){
-                                scrollState.animateScrollToItem(page + 1)
+                                swipableState.animateScrollTo(page + 1)
                             }
                         }
                     }
                 )
-                Button(onClick = {
-                    scope.launch {
-                        swipableState.animateScrollTo(Random(System.currentTimeMillis()).nextInt(questions.size).also {
-                            println("scroll To $it")
-                        })
-                    }
-                }) {
-
-                }
             }
         }
     }

@@ -23,32 +23,24 @@ fun SurveyExampleScreen(
         answerWithPercentageChosen: AnswerWithPercentageChosen,
     ) -> Unit
 ){
-    MultiStageSurveys(
-        modifier = Modifier.fillMaxWidth(),
-        questions = tasks[0],
-        answerOnQuestion = { question, answer ->
-            answerOnQuestion(0, question, answer)
+    LazyColumn(
+        modifier = modifier
+    ) {
+        itemsIndexed(tasks) { index, questions ->
+            MultiStageSurveys(
+                modifier = Modifier.fillMaxWidth(),
+                questions = questions,
+                answerOnQuestion = { question, answer ->
+                    answerOnQuestion(index, question, answer)
+                }
+            )
+            if (index != tasks.lastIndex){
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = palette.divider
+                )
+            }
         }
-    )
-//
-//    LazyColumn(
-//        modifier = modifier
-//    ) {
-//        itemsIndexed(tasks) { index, questions ->
-//            MultiStageSurveys(
-//                modifier = Modifier.fillMaxWidth(),
-//                questions = questions,
-//                answerOnQuestion = { question, answer ->
-//                    answerOnQuestion(index, question, answer)
-//                }
-//            )
-//            if (index != tasks.lastIndex){
-//                Divider(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    color = palette.divider
-//                )
-//            }
-//        }
-//    }
+    }
 
 }

@@ -10,6 +10,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -21,20 +22,18 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 
 fun Modifier.rippleBackground(
-    initializeOffset: (IntSize) -> Offset = { size ->
-        Offset((size.width / 2).toFloat(), (size.height / 2).toFloat())
-    },
+    initializeOffset: (IntSize) -> Offset = { Offset(0f, 0f) },
     isDrawRippleBackground: Boolean = false,
     isHandleClickable: Boolean = false,
     color: Color,
     onClick: () -> Unit = {},
 ): Modifier = composed {
     var size by remember { mutableStateOf<IntSize>(IntSize.Zero) }
-    var lastClickPosition by remember(size) { mutableStateOf(initializeOffset(size)) }
+    var lastClickPosition by remember { mutableStateOf(Offset.Unspecified) }
     val maxRadius = remember(size) { max(size.width.toFloat(), size.height.toFloat()) }
     val radius = remember { Animatable(0f) }
 
-    LaunchedEffect(isDrawRippleBackground){
+    LaunchedEffect(isDrawRippleBackground, size){
         if (isDrawRippleBackground){
             launch {
                 radius.animateTo(
@@ -62,7 +61,16 @@ fun Modifier.rippleBackground(
             }
         }
         .clip(MaterialTheme.shapes.small)
+        .onSizeChanged {
+            if (it != size) {
+                size = it
+            }
+        }
         .drawBehind {
+            if (lastClickPosition.isUnspecified){
+                lastClickPosition = initializeOffset(size)
+            }
+
             if (isDrawRippleBackground) {
                 drawCircle(
                     color = color,
@@ -71,11 +79,26 @@ fun Modifier.rippleBackground(
                 )
             }
         }
-        .onSizeChanged {
-            if (it != size){
-                size = it
+}
+
+fun Modifier.scaleSelectAnswer(isSelectedItem: Boolean) = composed {
+    val scale = remember { Animatable(1f) }
+
+    LaunchedEffect(isSelectedItem){
+        if (isSelectedItem){
+            launch {
+                scale.animateTo(1.05f, tween(DurationAnimable))
+                scale.animateTo(1f, tween(DurationAnimable))
             }
+        } else {
+            launch { scale.animateTo(1f) }
         }
+    }
+
+    Modifier.graphicsLayer {
+        scaleX = scale.value
+        scaleY = scale.value
+    }
 }
 
 fun Modifier.negativeAnswer(
@@ -123,3 +146,5 @@ fun Modifier.negativeAnswer(
         }
         .then(supportModifier)
 }
+
+private val DurationAnimable = 200

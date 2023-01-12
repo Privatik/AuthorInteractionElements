@@ -1,16 +1,21 @@
 package com.io.match_between_two_column
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme
+import com.io.core.ui.ProjectTheme.palette
 import com.io.item.rippleBackground
 
 @Composable
@@ -21,12 +26,18 @@ fun MatchItem(
     isFound: Boolean,
     selectItem: (ItemColumn) -> Unit,
 ){
+    val shapes = MaterialTheme.shapes
     val palette = LocalPaletteColors.current
+
     val supportModifier = remember(isFound) {
         if (isFound){
             return@remember Modifier.background(palette.success)
         }
-        Modifier.background(palette.backgroundTertiary)
+        Modifier.border(
+            1.dp,
+            palette.backgroundPrimary,
+            shapes.medium,
+        )
     }
 
     val isSelectedItem = remember {

@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":item:put-skip-per-edit"))
     implementation(project(":item:put-skip-per-drag"))
     implementation(project(":item:survey"))
+    implementation(project(":item:stars"))
     implementation(project(":item:match-between-two-column"))
 
     implementation 'androidx.core:core-ktx:1.9.0'

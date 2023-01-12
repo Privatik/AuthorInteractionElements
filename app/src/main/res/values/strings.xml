@@ -2,6 +2,9 @@
     <string name="app_name">AuthorInteractionElements</string>
     <string name="survey_label">Многоступенчатый опрос</string>
     <string name="match_between_two_column_label">Сопоставить два элемента</string>
+    <string name="put_skip_item">Заполнение пропуска в тексте</string>
     <string name="put_skip_item_per_edit_label">Заполнение пропуска в тексте через ввод</string>
     <string name="put_skip_item_per_drag_label">Заполнение пропуска в тексте через перетаскивание</string>
+    <string name="match_elements">Сопоставте элементы</string>
+    <string name="evaluate_in_stars">Оценить в звездах</string>
 </resources>

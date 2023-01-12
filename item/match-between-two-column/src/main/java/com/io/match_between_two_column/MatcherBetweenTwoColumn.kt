@@ -5,6 +5,7 @@ package com.io.match_between_two_column
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,12 +17,16 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -36,6 +41,8 @@ fun MatcherBetweenTwoColumn(
     modifier: Modifier = Modifier,
     orderedFirstColumn: List<PairMatchItems>,
     orderedSecondColumn: List<PairMatchItems>,
+    weightFirstColumn: Float = 1f,
+    weightSecondColumn: Float = 1f,
     foundMatchItems: (Long) -> Unit
 ){
     val palette = palette
@@ -46,19 +53,32 @@ fun MatcherBetweenTwoColumn(
     val binderHelper = remember { BindHelper() }
 
     Box(
-        modifier = modifier.height(150.dp)
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
-                .fillMaxHeight()
-                .zIndex(2f)
+                .fillMaxSize()
+                .clipToBounds()
+                .drawBehind {
+                    val path = binderHelper.getBindPath()
+                    drawPath(
+                        path,
+                        palette.success,
+                        style = Stroke(
+                            width = 4f
+                        )
+                    )
+                }
         ) {
             LazyColumnForMatch(
+                weight = weightFirstColumn,
                 items = orderedFirstColumn,
                 selectedItemIdFromColumn = itemIdFromFirstColumn,
                 getItemFromPair = { it.itemFromFirstColumn },
                 provideElementRect = {
-                    binderHelper.firstColumnElementRect = it
+                    if (binderHelper.firstColumnElementRect != it){
+                        binderHelper.firstColumnElementRect = it
+                    }
                 },
                 provideSuccessItem = binderHelper::addFoundedVisibleItemToFirstColumn,
                 removeSuccessItem = binderHelper::removeFoundedVisibleItemToFirstColumn,
@@ -72,11 +92,14 @@ fun MatcherBetweenTwoColumn(
                 }
             )
             LazyColumnForMatch(
+                weight = weightSecondColumn,
                 items = orderedSecondColumn,
                 selectedItemIdFromColumn = itemIdFromSecondColumn,
                 getItemFromPair = { it.itemFromSecondColumn },
                 provideElementRect = {
-                    binderHelper.secondColumnElementRect = it
+                    if (binderHelper.secondColumnElementRect != it){
+                        binderHelper.secondColumnElementRect = it
+                    }
                 },
                 provideSuccessItem = binderHelper::addFoundedVisibleItemToSecondColumn,
                 removeSuccessItem = binderHelper::removeFoundedVisibleItemToSecondColumn,
@@ -90,21 +113,6 @@ fun MatcherBetweenTwoColumn(
                 }
             )
         }
-
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(5f)
-        ){
-            val path = binderHelper.getBindPath()
-            drawPath(
-                path,
-                palette.success,
-                style = Stroke(
-                    width = 4f
-                )
-            )
-        }
     }
 }
 
@@ -113,9 +121,9 @@ private data class ElementRect(
     val size: IntSize,
 )
 
-private class BindHelper {
-    var firstColumnElementRect: ElementRect by Delegates.notNull()
-    var secondColumnElementRect: ElementRect by Delegates.notNull()
+private class BindHelper() {
+    var firstColumnElementRect: ElementRect? by mutableStateOf<ElementRect?>(null)
+    var secondColumnElementRect: ElementRect? by mutableStateOf<ElementRect?>(null)
 
     private val foundedItemsFromFirstColumn = SnapshotStateMap<Long, Pair<Int,ElementRect>>()
     private val foundedItemsFromSecondColumn = SnapshotStateMap<Long, Pair<Int,ElementRect>>()
@@ -134,7 +142,7 @@ private class BindHelper {
         index: Int,
         elementRect: ElementRect
     ) {
-        foundedItemsFromFirstColumn[itemId] = index to elementRect
+        foundedItemsFromSecondColumn[itemId] = index to elementRect
     }
 
     fun removeFoundedVisibleItemToFirstColumn(
@@ -146,43 +154,44 @@ private class BindHelper {
     fun removeFoundedVisibleItemToSecondColumn(
         itemId: Long
     ) {
-        foundedItemsFromFirstColumn.remove(itemId)
+        foundedItemsFromSecondColumn.remove(itemId)
     }
 
     fun getBindPath(): Path{
-        println("Path create")
+        if (firstColumnElementRect == null || secondColumnElementRect == null) {
+            path.reset()
+            return path
+        }
+
         val madeBinds = hashSetOf<Long>()
 
-        val minIndexFirstColumn = foundedItemsFromFirstColumn.minOfOrNull { it.value.first } ?: 0
-        val minIndexSecondColumn = foundedItemsFromFirstColumn.minOfOrNull { it.value.first } ?: 0
-        val isFirstColumnAbove = minIndexFirstColumn <= minIndexSecondColumn
+        val minIndexFirstColumn = foundedItemsFromFirstColumn.minOfOrNull { it.value.first } ?: Int.MAX_VALUE
+        val minIndexSecondColumn = foundedItemsFromSecondColumn.minOfOrNull { it.value.first } ?: Int.MAX_VALUE
 
         path.reset()
         foundedItemsFromFirstColumn.forEach { (id, pair) ->
-            val (_, firstElementRect) = pair
+            val ( indexFromFirstColumn, firstElementRect) = pair
 
             path.moveTo(
-                x = firstElementRect.offset.x + firstElementRect.size.width,
-                y = firstElementRect.offset.y + (firstElementRect.size.height / 2)
+                x = firstColumnElementRect!!.offset.x + firstElementRect.offset.x + firstElementRect.size.width,
+                y = firstColumnElementRect!!.offset.y + firstElementRect.offset.y + (firstElementRect.size.height / 2)
             )
-
-            println("Path move")
 
             if (foundedItemsFromSecondColumn.contains(id)){
                 val ( _ , secondElementRect) = foundedItemsFromSecondColumn.getValue(id)
                 path.lineTo(
-                    x = secondElementRect.offset.x,
-                    y = secondElementRect.offset.y + (secondElementRect.size.height / 2),
+                    x = secondColumnElementRect!!.offset.x + secondElementRect.offset.x,
+                    y = secondColumnElementRect!!.offset.y + secondElementRect.offset.y + (secondElementRect.size.height / 2),
                 )
-            } else if (isFirstColumnAbove){
+            } else if (indexFromFirstColumn > minIndexSecondColumn){
                 path.lineTo(
-                    x = secondColumnElementRect.offset.x,
-                    y = secondColumnElementRect.offset.y,
+                    x = secondColumnElementRect!!.offset.x,
+                    y = secondColumnElementRect!!.offset.y + secondColumnElementRect!!.size.height,
                 )
             } else {
                 path.lineTo(
-                    x = secondColumnElementRect.offset.x,
-                    y = secondColumnElementRect.offset.y + secondColumnElementRect.size.height,
+                    x = secondColumnElementRect!!.offset.x,
+                    y = secondColumnElementRect!!.offset.y,
                 )
             }
 
@@ -192,23 +201,22 @@ private class BindHelper {
         foundedItemsFromSecondColumn.forEach { (id, pair) ->
             if (madeBinds.contains(id)) return@forEach
 
-            val (_, secondElementRect) = pair
+            val ( indexFromSecondColumn, secondElementRect) = pair
 
-            println("Path move")
             path.moveTo(
-                x = secondElementRect.offset.x + secondElementRect.size.width,
-                y = secondElementRect.offset.y + (secondElementRect.size.height / 2)
+                x = secondColumnElementRect!!.offset.x + secondElementRect.offset.x,
+                y = secondColumnElementRect!!.offset.y + secondElementRect.offset.y + (secondElementRect.size.height / 2)
             )
 
-            if (isFirstColumnAbove){
+            if (indexFromSecondColumn > minIndexFirstColumn){
                 path.lineTo(
-                    x = firstColumnElementRect.offset.x + firstColumnElementRect.size.width,
-                    y = firstColumnElementRect.offset.y + firstColumnElementRect.size.height,
+                    x = firstColumnElementRect!!.offset.x + firstColumnElementRect!!.size.width,
+                    y = firstColumnElementRect!!.offset.y + firstColumnElementRect!!.size.height,
                 )
             } else {
-                path.lineTo(
-                    x = secondColumnElementRect.offset.x + firstColumnElementRect.size.width,
-                    y = secondColumnElementRect.offset.y,
+               path.lineTo(
+                    x = firstColumnElementRect!!.offset.x + firstColumnElementRect!!.size.width,
+                    y = firstColumnElementRect!!.offset.y,
                 )
             }
         }
@@ -260,6 +268,7 @@ private class MatchHelper(
 
 @Composable
 private fun RowScope.LazyColumnForMatch(
+    weight: Float = 1f,
     items: List<PairMatchItems>,
     selectedItemIdFromColumn: State<Long?>,
     getItemFromPair: (PairMatchItems) -> ItemColumn,
@@ -272,12 +281,11 @@ private fun RowScope.LazyColumnForMatch(
 
     LazyColumn(
         modifier = Modifier
-            .weight(1f)
-            .padding(dimens.insidePadding)
+            .weight(weight)
             .onGloballyPositioned {
                 provideElementRect(
                     ElementRect(
-                        it.positionInRoot(),
+                        it.positionInParent(),
                         it.size
                     )
                 )
@@ -320,8 +328,8 @@ private fun RowScope.LazyColumnForMatch(
                     )
                     .clip(MaterialTheme.shapes.medium)
                     .onGloballyPositioned {
-                        val newElementRect = ElementRect(it.positionInRoot(), it.size)
-                        if (newElementRect != elementRect){
+                        val newElementRect = ElementRect(it.positionInParent(), it.size)
+                        if (newElementRect != elementRect) {
                             elementRect = newElementRect
                         }
                     },
@@ -334,6 +342,7 @@ private fun RowScope.LazyColumnForMatch(
                     }
                 }
             )
+
             if (index != items.lastIndex){
                 Spacer(modifier = Modifier.height(dimens.smallSpace))
             }

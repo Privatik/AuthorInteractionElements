@@ -13,13 +13,15 @@ sealed class Screen(
     object MatchBetweenTwoColumn: Screen(R.string.match_between_two_column_label,"/MatchBetweenTwoColumn")
     object PutSkipItemPerEdit: Screen(R.string.put_skip_item_per_edit_label,"/PutSkipItemPerEdit")
     object PutSkipItemPerDrag: Screen(R.string.put_skip_item_per_drag_label,"/PutSkipItemPerDrag")
+    object Stars: Screen(R.string.evaluate_in_stars,"/Stars")
 
     companion object{
         fun values(): List<Screen> = listOf(
             Survey,
             MatchBetweenTwoColumn,
             PutSkipItemPerEdit,
-            PutSkipItemPerDrag
+            PutSkipItemPerDrag,
+            Stars,
         )
 
         val Saver = Saver<MutableState<Screen?>, String>(

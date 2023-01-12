@@ -2,6 +2,7 @@ package com.io.put_skip_per_drag
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.io.core.ui.ProjectTheme.dimens
 import com.io.core.ui.ProjectTheme.palette
 
@@ -38,7 +40,12 @@ fun DragElementsRow(
                         item = { item }
                     )
                     .padding(dimens.insidePadding)
-                    .background(palette.contentPrimary, shapes.medium),
+                    .background(palette.contentPrimary, shapes.medium)
+                    .border(
+                        width = 1.dp,
+                        color = palette.contentSecondary,
+                        shape = shapes.medium
+                    ),
                 item = item,
             )
         }

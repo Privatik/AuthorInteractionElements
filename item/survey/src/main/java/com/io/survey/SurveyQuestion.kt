@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.io.core.ui.DefaultDimens.heightQuestionBlock
 import com.io.core.ui.ProjectTheme.dimens
 import com.io.core.ui.ProjectTheme.palette
 import kotlinx.coroutines.launch
@@ -77,8 +78,6 @@ fun SurveyQuestion(
 }
 
 private val heightButtonBlock = 70.dp
-private val heightQuestionBlock = 300.dp
-private val heightAnswerBlock = heightQuestionBlock.div(2)
 
 @Composable
 private fun BottomSelectButton(

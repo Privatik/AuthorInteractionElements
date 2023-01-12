@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.getValue
@@ -58,11 +59,20 @@ class MainActivity : ComponentActivity() {
                         Screen.PutSkipItemPerEdit -> PutSkipItemPerEditExampleScreen(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(10.dp)
+                                .padding(10.dp),
+                            interactionItems = vm.interactionItemsForEdit,
+                            addIndexAsAnswered = vm::addIndexAsAnsweredInEditTask
                         )
                         Screen.PutSkipItemPerDrag -> PutSkipItemPerDragExampleScreen(
                             modifier = Modifier
                                 .fillMaxSize()
+                                .padding(10.dp),
+                            interactionItems = vm.interactionItemsForDrag,
+                            addIndexAsAnswered = vm::addIndexAsAnsweredInDragTask
+                        )
+                        Screen.Stars -> StarsScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(10.dp)
                         )
                         else -> ButtonsScreen(

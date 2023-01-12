@@ -3,20 +3,12 @@ package com.io.authorinteractionelements.mock
 import com.io.match_between_two_column.ItemColumn
 import com.io.match_between_two_column.PairMatchItems
 
-val mockMatchItems = listOf<PairMatchItems>(
+val mockMatchItems = mockQuestionToAnswer.mapIndexed { index, pair ->
     PairMatchItems(
-        ItemColumn(1, "1"),
-        ItemColumn(1, "Один")
-    ),
-    PairMatchItems(
-        ItemColumn(2, "2"),
-        ItemColumn(2, "Два")
-    ),
-    PairMatchItems(
-        ItemColumn(3, "3"),
-        ItemColumn(3, "Три")
-    ),
-)
+        ItemColumn(index.toLong(), pair.first),
+        ItemColumn(index.toLong(), pair.second),
+    )
+}
 
 fun List<PairMatchItems>.randomOrdered(): Pair<List<PairMatchItems>, List<PairMatchItems>>{
     val firstOrderedList = map { it.itemFromFirstColumn.id }

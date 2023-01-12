@@ -3,6 +3,7 @@ package com.io.authorinteractionelements
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.io.authorinteractionelements.mock.mockDataForSurveysScreen
+import com.io.authorinteractionelements.mock.mockInteractions
 import com.io.authorinteractionelements.mock.mockMatchItems
 import com.io.authorinteractionelements.mock.randomOrdered
 import com.io.survey.*
@@ -15,6 +16,15 @@ class MainViewModel: ViewModel() {
     val firstOrderedColumn = orderedColumnsMatchItems.first.toMutableStateList()
     val secondOrderedColumn = orderedColumnsMatchItems.second.toMutableStateList()
 
+    val interactionItemsForEdit = mockInteractions.toMutableStateList()
+    val interactionItemsForDrag = mockInteractions
+        .map { body ->
+            body.copy(
+                text = body.text.replace("textField", "dragBlock")
+            )
+        }
+        .toMutableStateList()
+
     fun updateSurveyQuestion(
         taskIndex: Int,
         questionWithSomeAnswers: QuestionWithSomeAnswers,
@@ -26,6 +36,27 @@ class MainViewModel: ViewModel() {
             youAnswerId = answerWithPercentageChosen.id,
         )
     }
+
+    fun addIndexAsAnsweredInDragTask(
+        index: Int
+    ) {
+        val body = interactionItemsForDrag[0]
+
+        interactionItemsForDrag[0] = body.copy(
+            indexAnsweredBlocks = (body.indexAnsweredBlocks + index)
+        )
+    }
+
+    fun addIndexAsAnsweredInEditTask(
+        index: Int
+    ) {
+        val body = interactionItemsForEdit[0]
+
+        interactionItemsForEdit[0] = body.copy(
+            indexAnsweredBlocks = (body.indexAnsweredBlocks + index)
+        )
+    }
+
 
     fun foundMatchItems(
         itemId: Long

@@ -7,7 +7,7 @@ internal object DarkPalette: Palette {
     override val backgroundPrimary: Color = Color.Black
     override val backgroundSecondary: Color = Color.White
     override val backgroundTertiary: Color = Color( 0xFFe5e4e2)
-    override val contentPrimary: Color = Color.LightGray
+    override val contentPrimary: Color = Color( 0xFFe5e4e2)
     override val contentSecondary: Color = Color.Black
     override val contentTertiary: Color = Color.White
     override val textPrimary: Color = Color.White

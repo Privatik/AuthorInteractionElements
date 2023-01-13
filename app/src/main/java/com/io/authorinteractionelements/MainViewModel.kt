@@ -6,6 +6,7 @@ import com.io.authorinteractionelements.mock.mockDataForSurveysScreen
 import com.io.authorinteractionelements.mock.mockInteractions
 import com.io.authorinteractionelements.mock.mockMatchItems
 import com.io.authorinteractionelements.mock.randomOrdered
+import com.io.stars.EvaluateInStars
 import com.io.survey.*
 
 class MainViewModel: ViewModel() {
@@ -23,6 +24,11 @@ class MainViewModel: ViewModel() {
                 text = body.text.replace("textField", "dragBlock")
             )
         }
+        .toMutableStateList()
+
+    val evaluateInStarsList = listOf(
+        EvaluateInStars()
+    )
         .toMutableStateList()
 
     fun updateSurveyQuestion(
@@ -79,5 +85,16 @@ class MainViewModel: ViewModel() {
 
         secondOrderedColumn.removeAt(secondPairForMatchIndex)
         secondOrderedColumn.add(nextIndex, pairForMatch)
+    }
+
+    fun evaluateInStars(
+        index: Int,
+        countSelectedStars: Int,
+    ) {
+        val body = evaluateInStarsList[index]
+
+        evaluateInStarsList[index] = body.copy(
+            selectedStars = countSelectedStars
+        )
     }
 }

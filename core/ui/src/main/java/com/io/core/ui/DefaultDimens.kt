@@ -16,7 +16,7 @@ object DefaultDimens: Dimens {
     override val horizontalPadding: Dp = 16.dp
     override val defaultBlockHeight: Dp = 30.dp
     override val defaultBlockWidth: Dp = 50.dp
-    override val defaultBorder: Dp = 2.dp
+    override val defaultBorder: Dp = 1.dp
     override val defaultElevation: Dp = 3.dp
     override val variationFontSize: TextUnit = 12.sp
     override val justVariationFontSize: TextUnit = 16.sp

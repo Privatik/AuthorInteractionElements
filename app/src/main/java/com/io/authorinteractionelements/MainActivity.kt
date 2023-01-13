@@ -73,10 +73,12 @@ class MainActivity : ComponentActivity() {
                             interactionTextItems = vm.interactionItemsForDrag,
                             addIndexAsAnswered = vm::addIndexAsAnsweredInDragTask
                         )
-                        Screen.Stars -> StarsScreen(
+                        Screen.Stars -> StarsExampleScreen(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
+                                .fillMaxSize()
+                                .padding(10.dp),
+                            evaluateInStarsList = vm.evaluateInStarsList,
+                            doEvaluate = vm::evaluateInStars
                         )
                         else -> ButtonsScreen(
                             modifier = Modifier.fillMaxSize(),

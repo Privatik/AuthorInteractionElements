@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.IntOffset
 import java.lang.Integer.max
 
 @Composable
-fun LeftSwipableBox(
+internal fun LeftSwipableBox(
     modifier: Modifier = Modifier,
     state: LeftSwipableState,
     userScrollEnabled: Boolean = true,

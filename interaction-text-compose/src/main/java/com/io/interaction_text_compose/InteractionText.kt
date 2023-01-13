@@ -1,4 +1,4 @@
-package com.io.item
+package com.io.interaction_text_compose
 
 
 import androidx.compose.runtime.Composable
@@ -22,7 +22,7 @@ private fun <T> MutableList<T>.getOrAutoAddAndGet(index: Int, defaultValue: (Int
 fun InteractionText(
     modifier: Modifier = Modifier,
     interactionBody: BodyForInteractionText,
-    getInteractionHelper: (InteractionHelper<String>) -> Unit = {},
+    getInteractionHelper: (InteractionTextManager<String>) -> Unit = {},
     textPlaceable: @Composable (
         text: String,
     ) -> Unit,
@@ -34,7 +34,7 @@ fun InteractionText(
     ) -> Unit,
 ){
     val helper = remember {
-        InteractionHelperImpl(interactionBody)
+        InteractionTextManagerImpl(interactionBody)
             .apply(getInteractionHelper)
     }
 
@@ -113,85 +113,4 @@ fun InteractionText(
             }
         }
     }
-}
-
-private class InteractionHelperImpl(
-    interactionBody: BodyForInteractionText,
-): InteractionHelper<String> {
-    private val regex = Regex(interactionBody.pattern)
-    private val elements = mutableListOf<Element>()
-
-    init {
-        val splitText = interactionBody.text.split(" ")
-        var patternIndex = 0
-
-        splitText.forEachIndexed { index, item ->
-            val additionalSpace = if (index == splitText.lastIndex) "" else " "
-
-            if (regex.containsMatchIn(item)){
-                val result = regex.find(item)
-                val beforePatternText = result?.let {
-                    item.substring(0, it.range.first)
-                } ?: ""
-                val afterPatternText = result?.let {
-                    if (it.range.last + 1 != item.length){
-                        "${item.substring(it.range.last + 1, item.length)}$additionalSpace"
-                    } else additionalSpace
-                } ?: additionalSpace
-
-                elements.add(Element.Interaction(
-                    index = patternIndex++,
-                    beforePatternText = beforePatternText,
-                    afterPatternText = afterPatternText,
-                    foundPattern = item,
-                ))
-
-            } else {
-                elements.add(Element.Text("$item$additionalSpace"))
-            }
-        }
-
-    }
-
-    sealed interface Element{
-        data class Text(val text: String): Element
-        data class Interaction(
-            val index: Int,
-            val beforePatternText: String,
-            val afterPatternText: String,
-            val foundPattern: String
-        ): Element
-    }
-
-    @Composable
-    fun ShowItemsInteractionElements(
-        textPlaceable: @Composable (
-            text: String,
-        ) -> Unit,
-        interactionPlaceable: @Composable (
-            index: Int,
-            beforePatternText: String,
-            afterPatternText: String,
-            foundPattern: String,
-        ) -> Unit,
-    ){
-        elements.forEach {
-            when(it){
-                is Element.Text -> {
-                    textPlaceable(it.text)
-                }
-                is Element.Interaction -> {
-                    interactionPlaceable(
-                        index = it.index,
-                        beforePatternText = it.beforePatternText,
-                        afterPatternText = it.afterPatternText,
-                        foundPattern = it.foundPattern,
-                    )
-                }
-            }
-        }
-    }
-
-    override fun <S : Any> interactionElements(transform: (String) -> S): List<S> =
-        elements.filterIsInstance<Element.Interaction>().map { transform(it.foundPattern) }
 }

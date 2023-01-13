@@ -1,20 +1,17 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.io.authorinteractionelements'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.io.authorinteractionelements"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -30,31 +27,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
     buildFeatures {
         compose true
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_ui_version
     }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
+
 dependencies {
-    implementation(project(":core:ui"))
-    implementation(project(":item"))
-    implementation(project(":item:put-skip-per-edit"))
-    implementation(project(":item:put-skip-per-drag"))
-    implementation(project(":item:survey"))
-    implementation(project(":item:stars"))
-    implementation(project(":item:match-between-two-column"))
-    implementation(project(":interaction-text-compose"))
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "androidx.compose.ui:ui:$compose_ui_version"

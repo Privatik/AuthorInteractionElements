@@ -17,7 +17,7 @@ import com.io.item.rippleBackground
 import com.io.item.scaleSelectAnswer
 
 @Composable
-fun SurveyAnswer(
+internal fun SurveyAnswer(
     modifier: Modifier = Modifier,
     isYouAnswered: Boolean,
     selectedSurveyAnswerId: State<Long?>,
@@ -41,7 +41,7 @@ fun SurveyAnswer(
         modifier = modifier
             .scaleSelectAnswer(isSelectedItem)
             .border(
-                width = 1.dp,
+                width = dimens.defaultBorder,
                 color = palette.backgroundPrimary,
                 shape = MaterialTheme.shapes.small
             )
@@ -68,10 +68,14 @@ fun SurveyAnswer(
         )
         if (isYouAnswered){
             Text(
-                text = stringResource(R.string.percentage_pattern, (percentageAnswered.value.value * 100).toInt() ),
+                text = stringResource(R.string.percentage_pattern, percentageAnswered.percentage().toInt() ),
                 fontSize = dimens.variationFontSize,
                 color = palette.textSecondary,
             )
         }
     }
+}
+
+private fun State<Percentage>.percentage(): Float{
+    return value.value * 100
 }

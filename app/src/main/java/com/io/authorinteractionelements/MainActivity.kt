@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,22 +51,26 @@ class MainActivity : ComponentActivity() {
                         Screen.MatchBetweenTwoColumn -> MatchBetweenTwoColumnExampleScreen(
                             modifier = Modifier
                                 .fillMaxSize(),
-                            orderedFirstColumn = vm.firstOrderedColumn,
-                            orderedSecondColumn = vm.secondOrderedColumn,
+                            pairsOrderedColumn = listOf(
+                                PairOrderedColumn(
+                                    orderedFirstColumn = vm.firstOrderedColumn,
+                                    orderedSecondColumn = vm.secondOrderedColumn
+                                )
+                            ),
                             foundMatchItems = vm::foundMatchItems
                         )
                         Screen.PutSkipItemPerEdit -> PutSkipItemPerEditExampleScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(10.dp),
-                            interactionItems = vm.interactionItemsForEdit,
+                            interactionTextItems = vm.interactionItemsForEdit,
                             addIndexAsAnswered = vm::addIndexAsAnsweredInEditTask
                         )
                         Screen.PutSkipItemPerDrag -> PutSkipItemPerDragExampleScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(10.dp),
-                            interactionItems = vm.interactionItemsForDrag,
+                            interactionTextItems = vm.interactionItemsForDrag,
                             addIndexAsAnswered = vm::addIndexAsAnsweredInDragTask
                         )
                         Screen.Stars -> StarsScreen(

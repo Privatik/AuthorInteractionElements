@@ -38,28 +38,31 @@ class MainViewModel: ViewModel() {
     }
 
     fun addIndexAsAnsweredInDragTask(
-        index: Int
+        index: Int,
+        indexPattern: Int,
     ) {
         val body = interactionItemsForDrag[0]
 
         interactionItemsForDrag[0] = body.copy(
-            indexAnsweredBlocks = (body.indexAnsweredBlocks + index)
+            indexAnsweredBlocks = (body.indexAnsweredBlocks + indexPattern)
         )
     }
 
     fun addIndexAsAnsweredInEditTask(
-        index: Int
+        index: Int,
+        indexPattern: Int
     ) {
         val body = interactionItemsForEdit[0]
 
         interactionItemsForEdit[0] = body.copy(
-            indexAnsweredBlocks = (body.indexAnsweredBlocks + index)
+            indexAnsweredBlocks = (body.indexAnsweredBlocks + indexPattern)
         )
     }
 
 
     fun foundMatchItems(
-        itemId: Long
+        index: Int,
+        itemId: Long,
     ) {
         val firstPairForMatchIndex =
             firstOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }

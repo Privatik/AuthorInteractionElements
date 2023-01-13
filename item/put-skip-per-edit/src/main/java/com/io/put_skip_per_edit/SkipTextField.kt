@@ -1,11 +1,9 @@
 package com.io.put_skip_per_edit
 
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import com.io.core.ui.ProjectTheme.palette
 
 @Composable
 fun SkipTextField(

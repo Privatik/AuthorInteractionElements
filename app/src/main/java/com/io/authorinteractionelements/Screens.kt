@@ -41,5 +41,6 @@ private fun String?.parseScreen(): Screen? =
         Screen.MatchBetweenTwoColumn.route -> Screen.MatchBetweenTwoColumn
         Screen.PutSkipItemPerEdit.route -> Screen.PutSkipItemPerEdit
         Screen.PutSkipItemPerDrag.route -> Screen.PutSkipItemPerDrag
+        Screen.Stars.route -> Screen.Stars
         else -> null
     }

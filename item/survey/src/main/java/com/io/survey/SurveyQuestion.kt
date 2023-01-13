@@ -2,9 +2,6 @@ package com.io.survey
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -20,10 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.io.core.ui.DefaultDimens.heightQuestionBlock
 import com.io.core.ui.ProjectTheme.dimens
 import com.io.core.ui.ProjectTheme.palette
-import kotlinx.coroutines.launch
 
 @Composable
-fun SurveyQuestion(
+internal fun SurveyQuestion(
     modifier: Modifier = Modifier,
     questionWithAnswers: QuestionWithSomeAnswers,
     answerOnQuestion: (QuestionWithSomeAnswers, AnswerWithPercentageChosen) -> Unit
@@ -77,8 +73,6 @@ fun SurveyQuestion(
     }
 }
 
-private val heightButtonBlock = 70.dp
-
 @Composable
 private fun BottomSelectButton(
     selectedSurveyAnswer: State<Long?>,
@@ -90,7 +84,7 @@ private fun BottomSelectButton(
     val backgroundButtonColor by animateColorAsState(
         targetValue = if (enabled.value) palette.backgroundSecondary else palette.backgroundPrimary
     )
-    val textColor by animateColorAsState(
+    val textButtonColor by animateColorAsState(
         targetValue = if (enabled.value) palette.textSecondary else palette.textTertiary
     )
 
@@ -102,27 +96,26 @@ private fun BottomSelectButton(
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Spacer(modifier = Modifier.height(dimens.smallSpace))
-        if (!questionWithAnswers.isYouAnswered){
-            Button(
-                modifier = Modifier,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = backgroundButtonColor,
-                    disabledBackgroundColor = backgroundButtonColor
-                ),
-                enabled = enabled.value,
-                onClick = {
-                    answerOnQuestion(
-                        questionWithAnswers,
-                        questionWithAnswers.variationsAnswers.first { it.id == selectedSurveyAnswer.value }
-                    )
-                }
-            ) {
-                Text(
-                    text = stringResource(R.string.choice),
-                    color = textColor
+        Button(
+            modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = backgroundButtonColor,
+                disabledBackgroundColor = backgroundButtonColor
+            ),
+            enabled = enabled.value,
+            onClick = {
+                answerOnQuestion(
+                    questionWithAnswers,
+                    questionWithAnswers.variationsAnswers.first { it.id == selectedSurveyAnswer.value }
                 )
             }
+        ) {
+            Text(
+                text = stringResource(R.string.choice),
+                color = textButtonColor
+            )
         }
-
     }
 }
+
+private val heightButtonBlock = 70.dp

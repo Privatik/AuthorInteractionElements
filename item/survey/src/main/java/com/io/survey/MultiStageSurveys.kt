@@ -29,13 +29,15 @@ fun MultiStageSurveys(
     val scope = rememberCoroutineScope()
     val canScroll by remember(swipableState.lastInteractionIndex) { derivedStateOf { questions.isAnsweredOnAllQuestion() } }
 
+    val palette = palette
+    val dimens = dimens
+    val border = remember { BorderStroke(dimens.defaultBorder, palette.backgroundPrimary) }
+
     LeftSwipableBox(
         state = swipableState,
         userScrollEnabled = canScroll,
     ) { page ->
-        val palette = palette
         val item by remember { derivedStateOf { questions[page] } }
-        val border = remember { BorderStroke(2.dp, palette.backgroundPrimary) }
 
         Card(
             modifier = modifier
@@ -43,7 +45,7 @@ fun MultiStageSurveys(
             backgroundColor = palette.backgroundTertiary,
             shape = MaterialTheme.shapes.medium,
             border = border,
-            elevation = 3.dp
+            elevation = dimens.defaultElevation,
         ) {
             Column(
                 modifier = Modifier

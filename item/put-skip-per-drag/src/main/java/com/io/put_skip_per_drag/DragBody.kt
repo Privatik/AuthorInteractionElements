@@ -2,7 +2,7 @@ package com.io.put_skip_per_drag
 
 import androidx.compose.ui.geometry.Offset
 
-class PositionConfig(
+internal class PositionConfig(
     interactionRect: InteractionRect,
     val matchBlock: (InteractionElement) -> Unit,
 ) {

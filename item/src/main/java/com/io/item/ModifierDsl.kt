@@ -30,7 +30,7 @@ fun Modifier.rippleBackground(
 ): Modifier = composed {
     var size by remember { mutableStateOf<IntSize>(IntSize.Zero) }
     var lastClickPosition by remember { mutableStateOf(Offset.Unspecified) }
-    val maxRadius = remember(size) { max(size.width.toFloat(), size.height.toFloat()) } * 1.2f
+    val maxRadius = remember(size) { max(size.width.toFloat(), size.height.toFloat()) * 1.2f }
     val radius = remember { Animatable(0f) }
 
     LaunchedEffect(isDrawRippleBackground, size){

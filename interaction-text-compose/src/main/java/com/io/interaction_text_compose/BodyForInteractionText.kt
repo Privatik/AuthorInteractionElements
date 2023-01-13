@@ -1,4 +1,4 @@
-package com.io.item
+package com.io.interaction_text_compose
 
 data class BodyForInteractionText(
     val text: String,

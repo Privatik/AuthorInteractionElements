@@ -1,6 +1,6 @@
 package com.io.authorinteractionelements.mock
 
-import com.io.item.BodyForInteractionText
+import com.io.interaction_text_compose.BodyForInteractionText
 
 val mockInteractions = listOf(
     BodyForInteractionText(

@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -15,16 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.io.core.ui.LocalPaletteColors
 import com.io.core.ui.ProjectTheme
-import com.io.core.ui.ProjectTheme.palette
 import com.io.item.rippleBackground
 
 @Composable
-fun MatchItem(
+internal fun MatchItem(
     modifier: Modifier = Modifier,
     selectedItemId: State<Long?>,
-    item: ItemColumn,
+    item: MatchedItem,
     isFound: Boolean,
-    selectItem: (ItemColumn) -> Unit,
+    matchItem: (MatchedItem) -> Unit,
 ){
     val shapes = MaterialTheme.shapes
     val palette = LocalPaletteColors.current
@@ -51,9 +49,7 @@ fun MatchItem(
                 isHandleClickable = !isFound,
                 isDrawRippleBackground = isSelectedItem.value,
                 color = palette.buttonRippleOnContent,
-                onClick = {
-                    selectItem(item)
-                },
+                onClick = { matchItem(item) },
             )
             .padding(ProjectTheme.dimens.insidePadding)
     ){

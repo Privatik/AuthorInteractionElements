@@ -2,6 +2,7 @@ package com.io.core.ui
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 
 interface Dimens {
     val smallSpace: Dp
@@ -15,8 +16,11 @@ interface Dimens {
     val dividerSpace: Dp
 
     val horizontalPadding: Dp
+
     val defaultBlockHeight: Dp
     val defaultBlockWidth: Dp
+    val defaultBorder: Dp
+    val defaultElevation: Dp
 
     val variationFontSize: TextUnit
     val justVariationFontSize: TextUnit

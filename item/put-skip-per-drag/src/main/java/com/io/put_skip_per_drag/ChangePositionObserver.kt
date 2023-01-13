@@ -15,13 +15,13 @@ class ChangePositionObserver {
         }
     }
 
-    fun subscribe(config: PositionConfig) {
+    internal fun subscribe(config: PositionConfig) {
         synchronized(this) {
             interactionBlocks.add(config)
         }
     }
 
-    fun unsubscribe(config: PositionConfig){
+    internal fun unsubscribe(config: PositionConfig){
         synchronized(this) {
             interactionBlocks.remove(config)
         }

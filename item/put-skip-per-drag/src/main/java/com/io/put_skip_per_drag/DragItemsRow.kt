@@ -42,7 +42,7 @@ fun DragElementsRow(
                     .padding(dimens.insidePadding)
                     .background(palette.contentPrimary, shapes.medium)
                     .border(
-                        width = 1.dp,
+                        width = dimens.defaultBorder,
                         color = palette.contentSecondary,
                         shape = shapes.medium
                     ),

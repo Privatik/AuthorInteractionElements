@@ -21,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.io.core.ui.ProjectTheme.dimens
 import com.io.core.ui.ProjectTheme.palette
 import com.io.item.negativeAnswer
 import com.io.item.rippleBackground
@@ -66,10 +67,11 @@ internal fun OutlinedTextFieldWithPadding(
         singleLine = singleLine,
         maxLines = maxLines,
         decorationBox = @Composable { innerTextField ->
+            val dimens = dimens
             val focused by interactionSource.collectIsFocusedAsState()
 
             val borderStroke = remember {
-                BorderStroke(BorderThickness, SolidColor(borderSolid))
+                BorderStroke(dimens.defaultBorder, SolidColor(borderSolid))
             }
 
             Row(
@@ -119,6 +121,3 @@ internal fun OutlinedTextFieldWithPadding(
         }
     )
 }
-
-private val AnimateChangeColorBorder = 150
-private val BorderThickness = 1.dp

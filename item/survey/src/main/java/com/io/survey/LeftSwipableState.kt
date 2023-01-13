@@ -13,13 +13,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 @Composable
-fun rememberLeftSwipableState(initializeIndex: Int = 0, countItems: Int): LeftSwipableState{
+internal fun rememberLeftSwipableState(initializeIndex: Int = 0, countItems: Int): LeftSwipableState{
     return rememberSaveable(saver = LeftSwipableState.Saver) {
         LeftSwipableState(initializeIndex, countItems)
     }
 }
 
-class LeftSwipableState(
+internal class LeftSwipableState(
     initializeIndex: Int = 0,
     val countItems: Int,
 ) {
@@ -59,21 +59,21 @@ class LeftSwipableState(
         animateTo(Offset.Zero)
     }
 
-    internal fun updateWidth(width: Float){
+    fun updateWidth(width: Float){
         this.width = width
     }
 
-    internal fun availableRange(): IntRange{
-        val leftBorder = (lastInteractionIndex - 1).coerceAtLeast(0)
+    fun availableRange(): IntRange{
+        val leftBorder = lastInteractionIndex
         val rightBorder = (lastInteractionIndex + 1).coerceAtMost(countItems - 1)
         return leftBorder..rightBorder
     }
 
-    internal fun determineDirection(offset: Offset){
+    fun determineDirection(offset: Offset){
         direction = if (offset.x >= 0f) Direction.SCROLL_TO_BACK else Direction.SCROLL_TO_NEXT
     }
 
-    internal fun applyLayer(index: Int, scope: GraphicsLayerScope){
+    fun applyLayer(index: Int, scope: GraphicsLayerScope){
         scope.apply {
             if (isScrollToNext()){
                 translationX = when {
@@ -92,7 +92,7 @@ class LeftSwipableState(
 
     }
 
-    internal suspend fun stop(){
+    suspend fun stop(){
         coroutineScope {
             launch {
                 settingBeforeScroll()
@@ -101,7 +101,7 @@ class LeftSwipableState(
         animatable.stop()
     }
 
-    internal suspend fun snapTo(offset: Offset){
+    suspend fun snapTo(offset: Offset){
         val leftBorder = if (lastInteractionIndex == countItems - 1) 0f else -width
         val rightBorder = 0f
         animatable.snapTo(
@@ -109,7 +109,7 @@ class LeftSwipableState(
         )
     }
 
-    internal suspend fun animateTo(offset: Offset, velocity: Offset = animatable.velocity){
+    suspend fun animateTo(offset: Offset, velocity: Offset = animatable.velocity){
         animatable.animateTo(
             initialVelocity = Offset(velocity.x, 0f),
             animationSpec = decayAnimationSpec,

@@ -55,7 +55,7 @@ fun PutSkipItemPerEditExampleScreen(
                         }
 
                         val isAnswered by remember {
-                            derivedStateOf { interactionTextItems[0].indexAnsweredBlocks.contains(index) }
+                            derivedStateOf { interactionTextItems[0].indexAnsweredBlocks.contains(indexPattern) }
                         }
 
                         val inputText = rememberSaveable {

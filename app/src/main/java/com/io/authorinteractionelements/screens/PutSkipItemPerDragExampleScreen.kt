@@ -95,7 +95,7 @@ fun PutSkipItemPerDragExampleScreen(
                             }
 
                             val isAnswered by remember {
-                                derivedStateOf { interactionTextItems[0].indexAnsweredBlocks.contains(index) }
+                                derivedStateOf { interactionTextItems[0].indexAnsweredBlocks.contains(indexPattern) }
                             }
 
                             val isError = remember { mutableStateOf(false) }

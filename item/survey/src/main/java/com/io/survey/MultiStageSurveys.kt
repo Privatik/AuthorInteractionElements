@@ -27,7 +27,7 @@ fun MultiStageSurveys(
 ) {
     val swipableState = rememberLeftSwipableState(initializeIndex = questions.nextIndex(),countItems = questions.size)
     val scope = rememberCoroutineScope()
-    val canScroll by remember(swipableState.lastInteractionIndex) { derivedStateOf { questions.isAnsweredOnAllQuestion() } }
+    val canScroll by remember { derivedStateOf { questions.isAnsweredOnAllQuestion() } }
 
     val palette = palette
     val dimens = dimens
@@ -37,7 +37,7 @@ fun MultiStageSurveys(
         state = swipableState,
         userScrollEnabled = canScroll,
     ) { page ->
-        val item by remember { derivedStateOf { questions[page] } }
+        val item = questions[page]
 
         Card(
             modifier = modifier

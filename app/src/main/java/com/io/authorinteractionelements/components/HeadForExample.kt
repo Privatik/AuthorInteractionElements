@@ -17,7 +17,10 @@ fun <T: Any> HeadForExample(
     LazyColumn(
         modifier = modifier
     ) {
-        itemsIndexed(items) { index, item ->
+        itemsIndexed(
+            items = items,
+            key = { index, _ -> index }
+        ) { index, item ->
             item(index, item)
 
             if (index != items.lastIndex){

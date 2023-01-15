@@ -2,6 +2,7 @@ package com.io.survey
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -52,7 +53,10 @@ internal fun SurveyQuestion(
             state = scrollState,
             contentPadding = PaddingValues(dimens.insidePadding)
         ) {
-            itemsIndexed(questionWithAnswers.variationsAnswers){ index, answer ->
+            itemsIndexed(
+                items = questionWithAnswers.variationsAnswers,
+                key = { _ , item -> item.id }
+            ){ index, answer ->
                 SurveyAnswer(
                     modifier = Modifier.fillMaxWidth(),
                     answer = answer,

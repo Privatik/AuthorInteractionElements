@@ -1,6 +1,7 @@
 package com.io.survey
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.IntOffset
@@ -18,16 +19,20 @@ internal fun LeftSwipableBox(
         modifier = modifier
             .then(if (userScrollEnabled) Modifier.swipable(state) else Modifier),
         content = {
-            repeat(state.countItems) { index -> item(index) }
+            repeat(state.countItems) { index ->
+                key(index) {
+                    item(index)
+                }
+            }
         }
     ) { measurables, outerContraints ->
 
         var maxWidth = outerContraints.minWidth
         var maxHeight = outerContraints.minHeight
         val placeables = measurables.map { measurable ->
-            measurable.measure(outerContraints).apply {
-                maxWidth = max(maxWidth, width)
-                maxHeight = max(maxHeight, height)
+            measurable.measure(outerContraints).also { placeable ->
+                maxWidth = max(maxWidth, placeable.width)
+                maxHeight = max(maxHeight, placeable.height)
             }
         }
 

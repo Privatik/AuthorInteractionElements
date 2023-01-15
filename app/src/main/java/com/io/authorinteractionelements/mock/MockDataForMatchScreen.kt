@@ -2,12 +2,19 @@ package com.io.authorinteractionelements.mock
 
 import com.io.match_between_two_column.MatchedItem
 import com.io.match_between_two_column.PairMatchedItems
+import kotlin.random.Random
 
-val mockMatchItems = mockQuestionToAnswer.mapIndexed { index, pair ->
-    PairMatchedItems(
-        MatchedItem(index.toLong(), pair.first),
-        MatchedItem(index.toLong(), pair.second),
-    )
+private val random: Random by lazy { Random(System.currentTimeMillis()) }
+
+val mockMatchItems = List(countItemsForMockScreen){
+    mockQuestionToAnswer
+        .subList(0, random.nextInt(1, mockQuestionToAnswer.size))
+        .mapIndexed { index, pair ->
+            PairMatchedItems(
+                MatchedItem(index.toLong(), pair.first),
+                MatchedItem(index.toLong(), pair.second),
+            )
+    }
 }
 
 fun List<PairMatchedItems>.randomOrdered(): Pair<List<PairMatchedItems>, List<PairMatchedItems>>{

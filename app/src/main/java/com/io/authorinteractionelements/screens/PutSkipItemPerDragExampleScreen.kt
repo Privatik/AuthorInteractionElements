@@ -79,7 +79,7 @@ fun PutSkipItemPerDragExampleScreen(
                                         foundPattern.split("|")[2].lowercase(Locale.getDefault())
                                     }
                                     .filterIndexed { index, _ ->
-                                        !interactionTextItems[0].indexAnsweredBlocks.contains(index)
+                                        !interactionTextItems[index].indexAnsweredBlocks.contains(index)
                                     }
                                     .mapIndexed { index, s -> InteractionElement(id = index,value = s) }
                             )
@@ -95,7 +95,7 @@ fun PutSkipItemPerDragExampleScreen(
                             }
 
                             val isAnswered by remember {
-                                derivedStateOf { interactionTextItems[0].indexAnsweredBlocks.contains(indexPattern) }
+                                derivedStateOf { interactionTextItems[index].indexAnsweredBlocks.contains(indexPattern) }
                             }
 
                             val isError = remember { mutableStateOf(false) }

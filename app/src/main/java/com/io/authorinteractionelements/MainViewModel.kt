@@ -2,10 +2,8 @@ package com.io.authorinteractionelements
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
-import com.io.authorinteractionelements.mock.mockDataForSurveysScreen
-import com.io.authorinteractionelements.mock.mockInteractions
-import com.io.authorinteractionelements.mock.mockMatchItems
-import com.io.authorinteractionelements.mock.randomOrdered
+import com.io.authorinteractionelements.mock.*
+import com.io.authorinteractionelements.screens.PairOrderedColumn
 import com.io.stars.EvaluateInStars
 import com.io.survey.*
 
@@ -13,9 +11,14 @@ class MainViewModel: ViewModel() {
 
     val surveyTasks = mockDataForSurveysScreen.toMutableStateList()
 
-    private val orderedColumnsMatchItems = mockMatchItems.randomOrdered()
-    val firstOrderedColumn = orderedColumnsMatchItems.first.toMutableStateList()
-    val secondOrderedColumn = orderedColumnsMatchItems.second.toMutableStateList()
+    val orderedColumnsMatchItems = mockMatchItems
+        .map { it.randomOrdered() }
+        .map {
+            PairOrderedColumn(
+                orderedFirstColumn = it.first.toMutableStateList(),
+                orderedSecondColumn = it.second.toMutableStateList()
+            )
+        }
 
     val interactionItemsForEdit = mockInteractions.toMutableStateList()
     val interactionItemsForDrag = mockInteractions
@@ -26,9 +29,7 @@ class MainViewModel: ViewModel() {
         }
         .toMutableStateList()
 
-    val evaluateInStarsList = listOf(
-        EvaluateInStars()
-    )
+    val evaluateInStarsList = List(countItemsForMockScreen){ EvaluateInStars() }
         .toMutableStateList()
 
     fun updateSurveyQuestion(
@@ -47,9 +48,9 @@ class MainViewModel: ViewModel() {
         index: Int,
         indexPattern: Int,
     ) {
-        val body = interactionItemsForDrag[0]
+        val body = interactionItemsForDrag[index]
 
-        interactionItemsForDrag[0] = body.copy(
+        interactionItemsForDrag[index] = body.copy(
             indexAnsweredBlocks = (body.indexAnsweredBlocks + indexPattern)
         )
     }
@@ -58,9 +59,9 @@ class MainViewModel: ViewModel() {
         index: Int,
         indexPattern: Int
     ) {
-        val body = interactionItemsForEdit[0]
+        val body = interactionItemsForEdit[index]
 
-        interactionItemsForEdit[0] = body.copy(
+        interactionItemsForEdit[index] = body.copy(
             indexAnsweredBlocks = (body.indexAnsweredBlocks + indexPattern)
         )
     }
@@ -70,21 +71,28 @@ class MainViewModel: ViewModel() {
         index: Int,
         itemId: Long,
     ) {
+        val pairOrderedColumn = orderedColumnsMatchItems[index]
+
         val firstPairForMatchIndex =
-            firstOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }
+            pairOrderedColumn.orderedFirstColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }
         val secondPairForMatchIndex =
-            secondOrderedColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }
-        val pairForMatch = firstOrderedColumn[firstPairForMatchIndex].copy(
+            pairOrderedColumn.orderedSecondColumn.indexOfFirst { it.itemFromFirstColumn.id == itemId }
+        val pairForMatch = pairOrderedColumn.orderedFirstColumn[firstPairForMatchIndex].copy(
             isFound = true
         )
 
-        val nextIndex = firstOrderedColumn.count { it.isFound }
+        val nextIndex = pairOrderedColumn.orderedFirstColumn.count { it.isFound }
 
-        firstOrderedColumn.removeAt(firstPairForMatchIndex)
-        firstOrderedColumn.add(nextIndex, pairForMatch)
+        (pairOrderedColumn.orderedFirstColumn as MutableList).apply {
+            removeAt(firstPairForMatchIndex)
+            pairOrderedColumn.orderedFirstColumn.add(nextIndex, pairForMatch)
+        }
 
-        secondOrderedColumn.removeAt(secondPairForMatchIndex)
-        secondOrderedColumn.add(nextIndex, pairForMatch)
+        (pairOrderedColumn.orderedSecondColumn as MutableList).apply {
+            removeAt(secondPairForMatchIndex)
+            add(nextIndex, pairForMatch)
+        }
+
     }
 
     fun evaluateInStars(

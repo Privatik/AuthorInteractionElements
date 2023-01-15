@@ -5,6 +5,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -28,6 +31,7 @@ internal fun SurveyQuestion(
     val isSelectedAtLeastOneItem = remember(questionWithAnswers.isYouAnswered) {
         derivedStateOf { !questionWithAnswers.isYouAnswered && selectedSurveyAnswer.value != null }
     }
+    val scrollState = rememberLazyListState()
 
     Column(
         modifier = modifier.height(heightQuestionBlock)
@@ -40,7 +44,12 @@ internal fun SurveyQuestion(
         Spacer(modifier = Modifier.height(dimens.smallSpace))
         LazyColumn(
             modifier = Modifier
-                .weight(1f),
+                .weight(1f)
+                .verticalScrollbar(
+                    state = scrollState,
+                    color = palette.backgroundPrimary
+                ),
+            state = scrollState,
             contentPadding = PaddingValues(dimens.insidePadding)
         ) {
             itemsIndexed(questionWithAnswers.variationsAnswers){ index, answer ->

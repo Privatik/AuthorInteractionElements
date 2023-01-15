@@ -51,12 +51,7 @@ class MainActivity : ComponentActivity() {
                         Screen.MatchBetweenTwoColumn -> MatchBetweenTwoColumnExampleScreen(
                             modifier = Modifier
                                 .fillMaxSize(),
-                            pairsOrderedColumn = listOf(
-                                PairOrderedColumn(
-                                    orderedFirstColumn = vm.firstOrderedColumn,
-                                    orderedSecondColumn = vm.secondOrderedColumn
-                                )
-                            ),
+                            pairsOrderedColumn = vm.orderedColumnsMatchItems,
                             foundMatchItems = vm::foundMatchItems
                         )
                         Screen.PutSkipItemPerEdit -> PutSkipItemPerEditExampleScreen(

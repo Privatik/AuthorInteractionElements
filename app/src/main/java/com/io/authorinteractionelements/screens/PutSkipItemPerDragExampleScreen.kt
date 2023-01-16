@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
@@ -21,10 +22,12 @@ import com.io.core.ui.ProjectTheme.palette
 import com.io.interaction_text_compose.BodyForInteractionText
 import com.io.interaction_text_compose.InteractionText
 import com.io.item.negativeAnswer
+import com.io.item.rippleBackground
 import com.io.put_skip_per_drag.ChangePositionObserver
 import com.io.put_skip_per_drag.DragElementsRow
 import com.io.put_skip_per_drag.InteractionElement
 import com.io.put_skip_per_drag.containerForDraggableItem
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
@@ -42,7 +45,8 @@ fun PutSkipItemPerDragExampleScreen(
     ) { index, interactionText ->
         DefaultCard {
             Column(
-                modifier = Modifier.padding(ProjectTheme.dimens.insidePadding)
+                modifier = Modifier
+                    .padding(ProjectTheme.dimens.insidePadding)
             ) {
                 Text(
                     text = stringResource(R.string.put_skip_item),
@@ -78,8 +82,8 @@ fun PutSkipItemPerDragExampleScreen(
                                     .interactionElements { foundPattern ->
                                         foundPattern.split("|")[2].lowercase(Locale.getDefault())
                                     }
-                                    .filterIndexed { index, _ ->
-                                        !interactionTextItems[index].indexAnsweredBlocks.contains(index)
+                                    .filterIndexed { patternIndex, _ ->
+                                        !interactionTextItems[index].indexAnsweredBlocks.contains(patternIndex)
                                     }
                                     .mapIndexed { index, s -> InteractionElement(id = index,value = s) }
                             )
@@ -100,47 +104,57 @@ fun PutSkipItemPerDragExampleScreen(
 
                             val isError = remember { mutableStateOf(false) }
 
-                            if (!isAnswered){
-                                SimpleTextForPutTask(
-                                    text = beforeText
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .height(ProjectTheme.dimens.defaultBlockHeight)
-                                        .width(dimens.defaultBlockWidth)
-                                        .background(
-                                            color = if (isError.value) Color.Transparent
-                                                    else palette.contentTertiary,
-                                            shape = shapes.medium
-                                        )
-                                        .negativeAnswer(
-                                            doAnimate = isError.value,
-                                            shape = shapes.medium,
-                                            color = palette.error,
-                                            onFinishedAnimate = {
-                                                isError.value = false
+                            SimpleTextForPutTask(
+                                text = beforeText
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .height(ProjectTheme.dimens.defaultBlockHeight)
+                                    .widthIn(min = dimens.defaultBlockWidth)
+                                    .then(
+                                        if (isAnswered) {
+                                            Modifier.rippleBackground(
+                                                isDrawRippleBackground = true,
+                                                color = palette.success,
+                                            )
+                                        } else {
+                                            Modifier.background(
+                                                color = if (isError.value) Color.Transparent
+                                                else palette.contentTertiary,
+                                                shape = shapes.medium
+                                            )
+                                        }
+                                    )
+                                    .negativeAnswer(
+                                        doAnimate = isError.value,
+                                        shape = shapes.medium,
+                                        color = palette.error,
+                                        onFinishedAnimate = {
+                                            isError.value = false
+                                        }
+                                    )
+                                    .containerForDraggableItem(
+                                        observer = changePositionObserver,
+                                        handleResultHovering = { element  ->
+                                            if (element.value == rightAnswer) {
+                                                interactionElements.remove(element)
+                                                addIndexAsAnswered(index, indexPattern)
+                                            } else {
+                                                isError.value = true
                                             }
-                                        )
-                                        .containerForDraggableItem(
-                                            observer = changePositionObserver,
-                                            hoveringOnItem = {
-                                                if (it.value == rightAnswer) {
-                                                    interactionElements.remove(it)
-                                                    addIndexAsAnswered(index, indexPattern)
-                                                } else {
-                                                    isError.value = true
-                                                }
-                                            }
-                                        )
-                                )
-                                SimpleTextForPutTask(
-                                    text = afterText
-                                )
-                            } else {
-                                SimpleTextForPutTask(
-                                    text = "$beforeText$rightAnswer$afterText"
-                                )
+                                        }
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (isAnswered) {
+                                    SimpleTextForPutTask(
+                                        text = rightAnswer
+                                    )
+                                }
                             }
+                            SimpleTextForPutTask(
+                                text = afterText
+                            )
                         }
                     )
                     DragElementsRow(

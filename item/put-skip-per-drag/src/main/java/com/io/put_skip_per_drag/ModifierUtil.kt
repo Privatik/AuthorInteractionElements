@@ -12,6 +12,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.minus
 import androidx.compose.ui.unit.plus
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -47,6 +48,7 @@ fun Modifier.draggableInContainer(
                             ),
                         element = item()
                     )
+
                     launch {
                         dragAnimatable.animateTo(Offset.Zero, animationSpec)
                     }
@@ -84,7 +86,7 @@ fun Modifier.draggableInContainer(
 
 fun Modifier.containerForDraggableItem(
     observer: ChangePositionObserver,
-    hoveringOnItem: (element: InteractionElement) -> Unit
+    handleResultHovering: (element: InteractionElement) -> Unit,
 ) = composed {
     var interactionRect by remember {
         mutableStateOf(
@@ -97,7 +99,7 @@ fun Modifier.containerForDraggableItem(
 
     DisposableEffect(interactionRect){
         val positionConfig = PositionConfig(interactionRect){
-            hoveringOnItem(it)
+            handleResultHovering(it)
         }
 
         observer.subscribe(positionConfig)

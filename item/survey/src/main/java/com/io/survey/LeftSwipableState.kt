@@ -53,8 +53,11 @@ internal class LeftSwipableState(
         settingBeforeScroll()
         while (lastInteractionIndex != index){
             val dragOffset = if (isScrollToNext()) Offset(-width, 0f) else Offset.Zero
-            animateTo(dragOffset)
-            settingBeforeScroll()
+            animateTo(
+                offset = dragOffset,
+                animationSpec = tween(DefaultDurationAnimationForAutoScroll),
+                isAutoSwitchOnNextItem = false,
+            )
         }
         animateTo(Offset.Zero)
     }
@@ -94,11 +97,9 @@ internal class LeftSwipableState(
 
     suspend fun stop(){
         coroutineScope {
-            launch {
-                settingBeforeScroll()
-            }
+            launch { animatable.stop() }
+            launch { settingBeforeScroll() }
         }
-        animatable.stop()
     }
 
     suspend fun snapTo(offset: Offset){
@@ -109,16 +110,27 @@ internal class LeftSwipableState(
         )
     }
 
-    suspend fun animateTo(offset: Offset, velocity: Offset = animatable.velocity){
+    suspend fun animateTo(
+        offset: Offset,
+        velocity: Offset = animatable.velocity,
+        animationSpec: AnimationSpec<Offset> = decayAnimationSpec,
+        isAutoSwitchOnNextItem: Boolean = true
+    ){
         animatable.animateTo(
             initialVelocity = Offset(velocity.x, 0f),
-            animationSpec = decayAnimationSpec,
+            animationSpec = animationSpec,
             targetValue = Offset(calculateFinalOffsetX(offset), 0f)
         )
+        if (isAutoSwitchOnNextItem) { determineDirectionToNext() }
+        settingBeforeScroll()
     }
 
     private fun determineDirectionForAutoScroll(newIndex: Int){
         direction = if (lastInteractionIndex > newIndex) Direction.SCROLL_TO_BACK else Direction.SCROLL_TO_NEXT
+    }
+
+    private fun determineDirectionToNext(){
+        direction = Direction.SCROLL_TO_NEXT
     }
 
     private suspend fun settingBeforeScroll(){
@@ -139,15 +151,9 @@ internal class LeftSwipableState(
     }
 
     private suspend fun settingBeforeScrollToNext(){
-        coroutineScope {
-            launch {
-                lastInteractionIndex = (lastInteractionIndex + 1)
-                    .coerceAtMost(countItems - 1)
-            }
-            launch {
-                animatable.snapTo(Offset.Zero)
-            }
-        }
+        lastInteractionIndex = (lastInteractionIndex + 1)
+            .coerceAtMost(countItems - 1)
+        animatable.snapTo(Offset.Zero)
     }
 
     private suspend fun settingBeforeScrollToBack(){
@@ -172,6 +178,8 @@ internal class LeftSwipableState(
     }
 
     companion object{
+        private const val DefaultDurationAnimationForAutoScroll = 600
+
         val Saver = Saver<LeftSwipableState, List<Int>>(
             save = { state -> listOf(state.lastInteractionIndex, state.countItems) },
             restore = { list -> LeftSwipableState(list[0],list[1]) }

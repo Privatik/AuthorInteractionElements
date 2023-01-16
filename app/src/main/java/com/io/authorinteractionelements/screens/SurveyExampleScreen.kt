@@ -18,7 +18,7 @@ fun SurveyExampleScreen(
 ){
     HeadForExample(
         modifier = modifier,
-        items = tasks
+        items = tasks,
     ) { index, questions ->
         MultiStageSurveys(
             modifier = Modifier.fillMaxWidth(),

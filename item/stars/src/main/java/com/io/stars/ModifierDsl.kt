@@ -103,13 +103,19 @@ internal fun Modifier.drawStarts(
 internal fun Modifier.drawStarsProgressLineByPath(
     starsPath: Path,
     canHandleClicks: State<Boolean>,
+    selectedStars: State<Int>,
     animableOffsetsStars: List<Animatable<Offset, AnimationVector2D>>,
     sizeOneStarPx: Size,
-    selectedStars: (Int) -> Unit,
+    selectStars: (Int) -> Unit,
 ) = composed {
 
     val palette = palette
-    val widthProgressLine = remember { Animatable(0f) }
+    val widthProgressLine = remember {
+        Animatable(
+            if (selectedStars.value == 0) 0f
+            else animableOffsetsStars[selectedStars.value - 1].value.x + sizeOneStarPx.width
+        )
+    }
 
     Modifier
         .pointerInput(canHandleClicks.value) {
@@ -125,7 +131,7 @@ internal fun Modifier.drawStarsProgressLineByPath(
                             if (clickedIndex != -1) {
                                 println("click $clickedIndex")
                                 launch {
-                                    selectedStars(clickedIndex + 1)
+                                    selectStars(clickedIndex + 1)
                                     widthProgressLine.stop()
                                     widthProgressLine.animateTo(
                                         targetValue = animableOffsetsStars[clickedIndex].value.x + sizeOneStarPx.width,

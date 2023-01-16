@@ -1,5 +1,6 @@
 package com.io.survey
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
@@ -19,9 +20,13 @@ internal fun LeftSwipableBox(
         modifier = modifier
             .then(if (userScrollEnabled) Modifier.swipable(state) else Modifier),
         content = {
-            repeat(state.countItems) { index ->
+            repeat(state.countItems){ index ->
                 key(index) {
-                    item(index)
+                    if (index in state.availableRange()){
+                        item(index)
+                    } else {
+                        Box {}
+                    }
                 }
             }
         }

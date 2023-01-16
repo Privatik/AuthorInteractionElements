@@ -1,6 +1,7 @@
 package com.io.interaction_text_compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 
 interface InteractionTextManager<T: Any> {
     fun <S : Any> interactionElements(
@@ -75,15 +76,17 @@ internal class InteractionTextManagerImpl(
         textElements.forEach {
             when(it){
                 is TextElement.Text -> {
-                    textPlaceable(it.text)
+                    key(it.text) { textPlaceable(it.text) }
                 }
                 is TextElement.Interaction -> {
-                    interactionPlaceable(
-                        index = it.index,
-                        beforePatternText = it.beforePatternText,
-                        afterPatternText = it.afterPatternText,
-                        foundPattern = it.foundPattern,
-                    )
+                    key(it.index, it.foundPattern) {
+                        interactionPlaceable(
+                            index = it.index,
+                            beforePatternText = it.beforePatternText,
+                            afterPatternText = it.afterPatternText,
+                            foundPattern = it.foundPattern,
+                        )
+                    }
                 }
             }
         }

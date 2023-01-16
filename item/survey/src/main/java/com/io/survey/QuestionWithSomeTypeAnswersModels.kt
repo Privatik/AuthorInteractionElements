@@ -1,6 +1,8 @@
 package com.io.survey
 
 import androidx.annotation.FloatRange
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.StateFlow
 
 data class QuestionWithSomeAnswers(

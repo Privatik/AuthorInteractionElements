@@ -1,12 +1,13 @@
 package com.io.interaction_text_compose
 
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.math.max
 
 private fun <T> MutableList<T>.getOrAutoAddAndGet(index: Int, defaultValue: (Int) -> T): T {
@@ -34,17 +35,19 @@ fun InteractionText(
     ) -> Unit,
 ){
     val helper = remember {
-        InteractionTextManagerImpl(interactionBody)
+        (interactionBody.interactionManager as InteractionTextManagerImpl)
             .apply(getInteractionHelper)
     }
 
     Layout(
         modifier = modifier,
         content = {
-            helper.ShowItemsInteractionElements(
-                textPlaceable = textPlaceable,
-                interactionPlaceable = interactionPlaceable,
-            )
+            helper.apply {
+                ShowItemsInteractionElements(
+                    textPlaceable = textPlaceable,
+                    interactionPlaceable = interactionPlaceable,
+                )
+            }
         }
     ) { measurables, outerContraints ->
         val placeablesInRow = mutableListOf<MutableList<Placeable>>()

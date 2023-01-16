@@ -1,5 +1,6 @@
 package com.io.authorinteractionelements.screens
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -31,7 +32,8 @@ fun PutSkipItemPerEditExampleScreen(
     ) { index, interactionText ->
         DefaultCard {
             Column(
-                modifier = Modifier.padding(dimens.insidePadding)
+                modifier = Modifier
+                    .padding(dimens.insidePadding)
             ) {
                 Text(
                     text = stringResource(R.string.put_skip_item),
@@ -77,7 +79,7 @@ fun PutSkipItemPerEditExampleScreen(
                             },
                             isError = isError,
                             onCheckText = {
-                                if (rightAnswer == inputText.value.lowercase(Locale.getDefault())){
+                                if (rightAnswer == inputText.value.lowercase(Locale.getDefault()).trim()){
                                     addIndexAsAnswered(index, indexPattern)
                                 } else {
                                     isError.value = true

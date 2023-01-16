@@ -37,7 +37,7 @@ fun MultiStageSurveys(
         state = swipableState,
         userScrollEnabled = canScroll,
     ) { page ->
-        val item = questions[page]
+        val item by remember { derivedStateOf { questions[page] } }
 
         Card(
             modifier = modifier
@@ -50,6 +50,7 @@ fun MultiStageSurveys(
             Column(
                 modifier = Modifier
             ) {
+
                 Text(
                     modifier = Modifier
                         .padding(dimens.insidePadding),

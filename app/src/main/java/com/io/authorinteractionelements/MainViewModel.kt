@@ -9,7 +9,7 @@ import com.io.survey.*
 
 class MainViewModel: ViewModel() {
 
-    val surveyTasks = mockDataForSurveysScreen.toMutableStateList()
+    val surveyTasks = mockDataForSurveysScreen
 
     val orderedColumnsMatchItems = mockMatchItems
         .map { it.randomOrdered() }

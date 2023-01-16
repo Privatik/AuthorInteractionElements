@@ -4,10 +4,10 @@ package com.io.stars
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -56,7 +56,7 @@ fun Stars(
         )
     }
 
-    val selectedStarts = remember { mutableStateOf(evaluateInStars.selectedStars) }
+    val selectedStarts = rememberSaveable { mutableStateOf<Int>(evaluateInStars.selectedStars) }
 
     val doAnimate = remember { mutableStateOf(false) }
     val isShowResult = remember { mutableStateOf(evaluateInStars.selectedStars != 0) }
@@ -64,7 +64,7 @@ fun Stars(
     val canHandleClicksByStars = remember { mutableStateOf(evaluateInStars.selectedStars == 0) }
     val isFirstStarInCenter = remember { mutableStateOf(evaluateInStars.selectedStars != 0) }
 
-    val enabled = remember { mutableStateOf(false) }
+    val enabled = remember { mutableStateOf(selectedStarts.value != 0) }
 
     Column(
         modifier = modifier
@@ -97,9 +97,10 @@ fun Stars(
                .drawStarsProgressLineByPath(
                    starsPath = path,
                    canHandleClicks = canHandleClicksByStars,
+                   selectedStars = selectedStarts,
                    animableOffsetsStars = offsetStars,
                    sizeOneStarPx = sizeOneStarPx,
-                   selectedStars = { countSelectedStars ->
+                   selectStars = { countSelectedStars ->
                        selectedStarts.value = countSelectedStars
                        enabled.value = true
                    },
